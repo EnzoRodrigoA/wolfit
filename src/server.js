@@ -1,9 +1,15 @@
-const express = require("express");
+import express from "express";
+import dotenv from "dotenv";
+
+import StatusRoutesV1 from "./v1/routes/status.routes.js";
+
 const app = express();
 const port = 3030;
-require("dotenv").config();
+dotenv.config();
 
 app.use(express.json());
+
+app.use("/api/v1/status", StatusRoutesV1);
 
 app.get("/", (request, response) => {
   response.status(200).json({ status: "Servidor rodando!" });
