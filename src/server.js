@@ -4,7 +4,8 @@ import dotenv from "dotenv";
 import StatusRoutesV1 from "./v1/routes/status.routes.js";
 
 const app = express();
-const port = 3030;
+const port = process.env.PORT || 3030;
+
 dotenv.config();
 
 app.use(express.json());
