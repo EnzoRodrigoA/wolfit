@@ -14,13 +14,16 @@
     "services:down": "docker compose -f src/infra/compose.yaml down",
     "lint:prettier:check": "prettier --check .",
     "lint:prettier:fix": "prettier --write .",
-    "lint:eslint:check": "eslint ./src"
+    "lint:eslint:check": "eslint ./src",
+    "migration:create": "node-pg-migrate -m src/infra/migrations create",
+    "migration:up": "node-pg-migrate -m src/infra/migrations up"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "dotenv": "17.2.1",
     "express": "5.1.0",
+    "node-pg-migrate": "8.0.3",
     "pg": "8.16.3"
   },
   "devDependencies": {
