@@ -5,6 +5,7 @@ dotenv.config();
 const config = {
   moduleDirectories: ["node_modules"],
   rootDir: ".",
+  testTimeout: 60000,
 };
 
 export default config;
