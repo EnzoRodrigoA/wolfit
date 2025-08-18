@@ -5,7 +5,7 @@ import dotenvExpand from "dotenv-expand";
 import StatusRoutesV1 from "./v1/routes/status.routes.js";
 import MigrationsRoutesV1 from "./v1/routes/migrations.routes.js";
 
-dotenvExpand.expand(dotenv.config());
+dotenvExpand.expand(dotenv.config({ path: ".env.development" }));
 
 const app = express();
 const port = process.env.PORT || 3030;
