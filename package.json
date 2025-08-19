@@ -20,7 +20,8 @@
     "lint:eslint:check": "eslint ./src",
     "migrations:create": "node-pg-migrate -m src/infra/migrations create",
     "migrations:up": "node-pg-migrate -m src/infra/migrations up",
-    "wait-for-postgres": "node src/infra/scripts/wait-for-postgres.js"
+    "wait-for-postgres": "node src/infra/scripts/wait-for-postgres.js",
+    "prepare": "husky"
   },
   "author": "",
   "license": "ISC",
@@ -40,6 +41,7 @@
     "eslint": "9.33.0",
     "eslint-plugin-jest": "29.0.1",
     "globals": "16.3.0",
+    "husky": "9.1.7",
     "jest": "30.0.5",
     "nodemon": "3.1.10",
     "prettier": "3.6.2"
