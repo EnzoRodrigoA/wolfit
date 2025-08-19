@@ -12,7 +12,7 @@
     "dev": "trap \"npm run services:stop\" INT EXIT; npm run services:up && npm run services:wait:database && npm run migrations:up && nodemon src/server.js",
     "test": "npm run services:up && concurrently -n node,jest --hide node -k -s command-jest \"node src/server.js\" \"node --experimental-vm-modules node_modules/.bin/jest --runInBand --verbose\"",
     "posttest": "npm run services:stop",
-    "test:watch": "node --experimental-vm-modules node_modules/.bin/jest --watchAll --runInBand",
+    "test:watch": "node --experimental-vm-modules node_modules/.bin/jest --watchAll --runInBand --verbose",
     "services:up": "docker compose -f src/infra/compose.yaml up -d",
     "services:stop": "docker compose -f src/infra/compose.yaml stop",
     "services:down": "docker compose -f src/infra/compose.yaml down",
