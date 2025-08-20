@@ -7,6 +7,7 @@ const config = {
   rootDir: ".",
   testTimeout: 60000,
   setupFiles: ["<rootDir>/jest.setup.js"],
+  watchPathIgnorePatterns: ["<rootDir>/node_modules"],
 };
 
 export default config;
