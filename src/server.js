@@ -6,6 +6,7 @@ dotenvExpand.expand(dotenv.config({ path: ".env.development", quiet: true }));
 
 import StatusRoutesV1 from "./v1/routes/status.routes.js";
 import MigrationsRoutesV1 from "./v1/routes/migrations.routes.js";
+import { InternalServerError } from "./infra/errors.js";
 
 const app = express();
 const port = process.env.PORT || 3030;
@@ -17,6 +18,16 @@ app.use("/api/v1/migrations", MigrationsRoutesV1);
 
 app.get("/", (request, response) => {
   response.status(200).json({ status: "Servidor rodando!" });
+});
+
+//Tratamento Global de Erros
+// eslint-disable-next-line no-unused-vars
+app.use((error, request, response, next) => {
+  const statusCode = error.statusCode || 500;
+  const publicErrorObject = error.statusCode
+    ? error
+    : new InternalServerError({ cause: error });
+  response.status(statusCode).json(publicErrorObject);
 });
 
 app.listen(port, () => {

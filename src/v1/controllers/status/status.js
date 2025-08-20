@@ -1,7 +1,6 @@
 import database from "#src/infra/database.js";
-import { InternalServerError } from "#src/infra/errors/errors.js";
 
-export async function status(request, response) {
+async function getStatusHandler(request, response, next) {
   try {
     const updatedAt = new Date().toISOString();
 
@@ -41,9 +40,12 @@ export async function status(request, response) {
       },
     });
   } catch (error) {
-    const publicErrorObject = new InternalServerError({
-      cause: error,
-    });
-    response.status(500).json(publicErrorObject);
+    next(error);
   }
 }
+
+const status = {
+  getStatusHandler,
+};
+
+export default status;
