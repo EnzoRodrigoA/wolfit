@@ -20,13 +20,21 @@ app.get("/", (request, response) => {
   response.status(200).json({ status: "Servidor rodando!" });
 });
 
-//Tratamento Global de Erros
 // eslint-disable-next-line no-unused-vars
 app.use((error, request, response, next) => {
-  const statusCode = error.statusCode || 500;
-  const publicErrorObject = error.statusCode
-    ? error
-    : new InternalServerError({ cause: error });
+  const statusCode = error.statusCode;
+  const publicErrorObject =
+    statusCode >= 500
+      ? new InternalServerError({
+          cause: error,
+          statusCode: statusCode,
+        })
+      : error;
+  if (process.env.NODE_ENV !== "production") {
+    console.error(error.stack);
+    console.error(error.cause);
+    console.error("StatusCode:", error.statusCode);
+  }
   response.status(statusCode).json(publicErrorObject);
 });
 
