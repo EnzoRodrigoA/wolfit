@@ -5,9 +5,8 @@ import status from "../controllers/status/status.js";
 
 const router = Router();
 
-router.get("/", status.getStatusHandler);
+router.get("/", status);
 
-//Sempre abaixo das rotas
 router.use("/", (request, response, next) => {
   const error = new MethodNotAllowedError();
   next(error);

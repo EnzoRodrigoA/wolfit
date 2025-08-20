@@ -1,6 +1,6 @@
 import database from "#src/infra/database.js";
 
-async function getStatusHandler(request, response, next) {
+export default async function status(request, response, next) {
   try {
     const updatedAt = new Date().toISOString();
 
@@ -43,9 +43,3 @@ async function getStatusHandler(request, response, next) {
     next(error);
   }
 }
-
-const status = {
-  getStatusHandler,
-};
-
-export default status;
