@@ -4,13 +4,12 @@ beforeAll(async () => {
   await orchestrator.waitForAllServices();
 });
 
-describe("POST /api/v1/status", () => {
+describe("PATCH /api/v1/migrations", () => {
   describe("Anonymous User", () => {
     test("Other method should return an error", async () => {
-      const response = await fetch("http://localhost:3030/api/v1/status", {
-        method: "POST",
+      const response = await fetch("http://localhost:3030/api/v1/migrations", {
+        method: "PATCH",
       });
-
       expect(response.status).toBe(405);
 
       const responseBody = await response.json();
