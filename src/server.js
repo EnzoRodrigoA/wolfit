@@ -31,9 +31,11 @@ app.use((error, request, response, next) => {
         })
       : error;
   if (process.env.NODE_ENV !== "production") {
-    console.error(error.stack);
-    console.error(error.cause);
-    console.error("StatusCode:", error.statusCode);
+    if (statusCode >= 500) {
+      console.error(error);
+    } else {
+      console.info("\n", statusCode, `- ${error.name} - ${error.action} \n`);
+    }
   }
   response.status(statusCode).json(publicErrorObject);
 });
