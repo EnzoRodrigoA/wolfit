@@ -11,15 +11,11 @@ function logger(req, res, next) {
 
     let statusColor;
 
-    if (statusCode >= 500)
-      statusColor = chalk.red; // vermelho
-    else if (statusCode >= 400)
-      statusColor = chalk.yellow; // amarelo
-    else if (statusCode >= 300)
-      statusColor = chalk.cyan; // ciano
-    else if (statusCode >= 200)
-      statusColor = chalk.green; // verde
-    else statusColor = chalk.white; // reset
+    if (statusCode >= 500) statusColor = chalk.red;
+    else if (statusCode >= 400) statusColor = chalk.yellow;
+    else if (statusCode >= 300) statusColor = chalk.cyan;
+    else if (statusCode >= 200) statusColor = chalk.green;
+    else statusColor = chalk.white;
 
     console.log(`${method} ${url} ${statusColor(statusCode)} in ${duration}ms`);
 
