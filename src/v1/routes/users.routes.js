@@ -6,6 +6,7 @@ import users from "../controllers/users/users.js";
 const router = Router();
 
 router.post("/", users.postHandler);
+router.get("/:username", users.getOneByUsername);
 
 router.use("/", (request, response, next) => {
   const error = new MethodNotAllowedError();

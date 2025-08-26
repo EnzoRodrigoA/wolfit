@@ -14,7 +14,6 @@ const port = process.env.PORT || 3030;
 app.use(express.json());
 app.use(logger);
 
-//Erro?
 app.use("/api/v1", appRouter);
 
 app.get("/", (request, response) => {

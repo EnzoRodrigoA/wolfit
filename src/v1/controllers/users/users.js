@@ -10,8 +10,19 @@ async function postHandler(request, response, next) {
   }
 }
 
+async function getOneByUsername(request, response, next) {
+  try {
+    const { username } = request.params;
+    const userFound = await user.findOneByUsername(username);
+    return response.status(200).json(userFound);
+  } catch (error) {
+    next(error);
+  }
+}
+
 const users = {
   postHandler,
+  getOneByUsername,
 };
 
 export default users;

@@ -2,7 +2,7 @@ import { InternalServerError } from "#src/infra/errors.js";
 
 // eslint-disable-next-line no-unused-vars
 export default function globalErrorCatcher(error, request, response, next) {
-  const statusCode = error.statusCode;
+  const statusCode = error.statusCode || 500;
   const publicErrorObject =
     statusCode >= 500
       ? new InternalServerError({
