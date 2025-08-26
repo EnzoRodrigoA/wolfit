@@ -1,12 +1,11 @@
 import { Router } from "express";
-
-import migrations from "../controllers/migrations/migrations.js";
 import { MethodNotAllowedError } from "#src/infra/errors.js";
+
+import users from "../controllers/users/users.js";
 
 const router = Router();
 
-router.get("/", migrations.getHandler);
-router.post("/", migrations.postHandler);
+router.post("/", users.postHandler);
 
 router.use("/", (request, response, next) => {
   const error = new MethodNotAllowedError();
