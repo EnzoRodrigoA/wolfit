@@ -13,6 +13,11 @@ export default function globalErrorCatcher(error, request, response, next) {
   if (process.env.NODE_ENV !== "production") {
     if (statusCode >= 500) {
       console.error(error);
+    } else if (statusCode === undefined) {
+      throw new InternalServerError({
+        cause: error,
+        statusCode: 500,
+      });
     } else {
       console.info("\n", statusCode, `- ${error.name} - ${error.action} `);
     }
