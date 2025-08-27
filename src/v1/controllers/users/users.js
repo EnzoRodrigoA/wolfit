@@ -10,6 +10,19 @@ async function postHandler(request, response, next) {
   }
 }
 
+async function patchHandler(request, response, next) {
+  try {
+    const { username } = request.params;
+    const userInputValues = request.body;
+
+    const updatedUser = await user.update(username, userInputValues);
+
+    return response.status(200).json(updatedUser);
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function getOneByUsername(request, response, next) {
   try {
     const { username } = request.params;
@@ -22,6 +35,7 @@ async function getOneByUsername(request, response, next) {
 
 const users = {
   postHandler,
+  patchHandler,
   getOneByUsername,
 };
 
