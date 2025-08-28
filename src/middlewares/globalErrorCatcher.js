@@ -14,7 +14,7 @@ export default function globalErrorCatcher(error, request, response, next) {
     if (statusCode >= 500) {
       console.error(error);
     } else {
-      console.info("\n", statusCode, `- ${error.name} - ${error.action} `);
+      console.info("\n", statusCode, `- ${error.name} - ${error.action}`);
     }
   }
   response.status(statusCode).json(publicErrorObject);
