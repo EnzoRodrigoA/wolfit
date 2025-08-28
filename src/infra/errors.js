@@ -58,6 +58,26 @@ export class ValidationError extends Error {
   }
 }
 
+export class UnauthorizedError extends Error {
+  constructor({ cause, message, action }) {
+    super(message || "Um erro de autorização ocorreu", {
+      cause,
+    });
+    this.name = "UnauthorizedError";
+    this.action = action || "Ajuste os dados e tente novamente";
+    this.statusCode = 401;
+  }
+
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      action: this.action,
+      status_code: this.statusCode,
+    };
+  }
+}
+
 export class NotFoundError extends Error {
   constructor({ cause, message, action }) {
     super(message || "Um erro de validação ocorreu", {
