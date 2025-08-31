@@ -32,7 +32,7 @@ async function create(userId) {
 async function renew(sessionId) {
   const expiresAt = new Date(Date.now() + EXPIRATION_IN_MILLISECONDS);
 
-  const renewedSessionObject = runUpdatedQuery(sessionId, expiresAt);
+  const renewedSessionObject = await runUpdatedQuery(sessionId, expiresAt);
   return renewedSessionObject;
 
   async function runUpdatedQuery(sessionId, expiresAt) {
@@ -55,8 +55,12 @@ async function renew(sessionId) {
 }
 
 async function findOneValidByToken(sessionToken) {
-  const results = await database.query({
-    text: `
+  const sessionFound = await runSelectQuery(sessionToken);
+  return sessionFound;
+
+  async function runSelectQuery(sessionToken) {
+    const results = await database.query({
+      text: `
       SELECT 
         *
       FROM
@@ -67,23 +71,48 @@ async function findOneValidByToken(sessionToken) {
       LIMIT
         1
     ;`,
-    values: [sessionToken],
-  });
-
-  if (results.rowCount === 0) {
-    throw new UnauthorizedError({
-      message: "Usuário não possui sessão válida.",
-      action: "Verifique se o usuário está logado e tente novamente.",
+      values: [sessionToken],
     });
-  }
 
-  return results.rows[0];
+    if (results.rowCount === 0) {
+      throw new UnauthorizedError({
+        message: "Usuário não possui sessão válida.",
+        action: "Verifique se o usuário está logado e tente novamente.",
+      });
+    }
+
+    return results.rows[0];
+  }
+}
+
+async function expireById(sessionId) {
+  const expiredSessionObject = await runUpdateQuery(sessionId);
+  return expiredSessionObject;
+
+  async function runUpdateQuery(sessionId) {
+    const results = await database.query({
+      text: `
+      UPDATE
+        sessions
+      SET
+        expires_at = created_at - interval '1 year',
+        updated_at = NOW()
+      WHERE
+        id = $1
+      RETURNING
+        *
+      ;`,
+      values: [sessionId],
+    });
+    return results.rows[0];
+  }
 }
 
 const session = {
   create,
   renew,
   findOneValidByToken,
+  expireById,
   EXPIRATION_IN_MILLISECONDS,
 };
 

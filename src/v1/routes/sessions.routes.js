@@ -6,6 +6,7 @@ import sessions from "../controllers/sessions/sessions.js";
 const router = Router();
 
 router.post("/", sessions.postHandler);
+router.delete("/", sessions.deleteHandler);
 
 router.use("/", (request, response, next) => {
   const error = new MethodNotAllowedError();
