@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import dotenvExpand from "dotenv-expand";
+import cookieParser from "cookie-parser";
 
 import logger from "./middlewares/logger.js";
 import globalErrorCatcher from "./middlewares/globalErrorCatcher.js";
@@ -13,6 +14,7 @@ const port = process.env.PORT || 3030;
 
 app.use(express.json());
 app.use(logger);
+app.use(cookieParser());
 
 app.use("/api/v1", appRouter);
 
