@@ -5,6 +5,7 @@ import database from "#src/infra/database.js";
 import migrator from "#src/v1/models/migrator.js";
 import user from "#src/v1/models/user.js";
 import session from "#src/v1/models/session.js";
+import workout from "#src/v1/models/workout.js";
 
 const emailHttpUrl = `http://${process.env.EMAIL_HTTP_HOST}:${process.env.EMAIL_HTTP_PORT}`;
 
@@ -63,6 +64,10 @@ async function createSession(userId) {
   return await session.create(userId);
 }
 
+async function createWorkout(userId, name) {
+  return await workout.createWorkout(userId, name || "Treino padrão");
+}
+
 async function deleteAllEmails() {
   try {
     await fetch(`${emailHttpUrl}/messages`, {
@@ -94,6 +99,7 @@ const orchestrator = {
   runPendingMigrations,
   createUser,
   createSession,
+  createWorkout,
   deleteAllEmails,
   getLastEmail,
 };
