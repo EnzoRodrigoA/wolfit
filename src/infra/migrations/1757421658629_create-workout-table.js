@@ -21,10 +21,10 @@ export const up = (pgm) => {
       notNull: true,
     },
 
-    last_date: {
-      type: "timestamptz",
+    is_rest: {
+      type: "boolean",
       notNull: true,
-      default: pgm.func("timezone('utc', now())"),
+      default: false,
     },
 
     created_at: {

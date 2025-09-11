@@ -8,7 +8,7 @@ beforeAll(async () => {
 
 describe("PATCH /api/v1/workouts/reorder", () => {
   describe("Default User", () => {
-    test("With reordened workouts list", async () => {
+    test("With reordered workouts list", async () => {
       const createdUser = await orchestrator.createUser({});
       const sessionObject = await orchestrator.createSession(createdUser.id);
 
@@ -40,6 +40,18 @@ describe("PATCH /api/v1/workouts/reorder", () => {
       );
 
       expect(response.status).toBe(200);
+
+      const responseBody = await response.json();
+
+      expect(responseBody.inWorkouts[0].name).toBe("Pernas");
+      expect(responseBody.inWorkouts[1].name).toBe("Peito");
+      expect(responseBody.inWorkouts[2].name).toBe("Costas");
+      expect(responseBody.inWorkouts[1].sequence_index).toBe(2);
+
+      expect(responseBody.inWorkoutQueue[0].name).toBe("Pernas");
+      expect(responseBody.inWorkoutQueue[1].name).toBe("Peito");
+      expect(responseBody.inWorkoutQueue[2].name).toBe("Costas");
+      expect(responseBody.inWorkoutQueue[1].sequence_index).toBe(2);
     });
 
     test("Without data in request body", async () => {
@@ -59,6 +71,14 @@ describe("PATCH /api/v1/workouts/reorder", () => {
       );
 
       expect(response.status).toBe(400);
+
+      const responseBody = await response.json();
+      expect(responseBody).toEqual({
+        name: "ValidationError",
+        message: "Ordem não enviada ou incorreta",
+        action: "Verifique o corpo da requisição e tente novamente",
+        status_code: 400,
+      });
     });
   });
 });

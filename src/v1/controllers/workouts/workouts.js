@@ -18,6 +18,20 @@ async function newWorkoutHandler(request, response, next) {
   }
 }
 
+async function newRestDayHandler(request, response, next) {
+  try {
+    const sessionToken = request.cookies.session_id;
+
+    const sessionObject = await session.findOneValidByToken(sessionToken);
+    const userId = sessionObject.user_id;
+    const newRestDay = await workout.createRestDay(userId);
+
+    return response.status(201).json(newRestDay);
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function updateWorkoutHandler(request, response, next) {
   try {
     const { complete, name } = request.body;
@@ -80,6 +94,20 @@ async function getWorkoutsHandler(request, response, next) {
   }
 }
 
+async function getTodaysWorkoutHandler(request, response, next) {
+  try {
+    const sessionToken = request.cookies.session_id;
+    const sessionObject = await session.findOneValidByToken(sessionToken);
+    const userId = sessionObject.user_id;
+
+    const todaysWorkout = await workout.getTodaysWorkout(userId);
+
+    return response.status(200).json(todaysWorkout);
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function deleteWorkoutHandler(request, response, next) {
   try {
     const { workoutId } = request.params;
@@ -98,7 +126,9 @@ async function deleteWorkoutHandler(request, response, next) {
 
 const workouts = {
   newWorkoutHandler,
+  newRestDayHandler,
   getWorkoutsHandler,
+  getTodaysWorkoutHandler,
   updateWorkoutHandler,
   reorderWorkoutsHandler,
   deleteWorkoutHandler,

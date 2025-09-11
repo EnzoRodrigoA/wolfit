@@ -5,6 +5,8 @@ import workouts from "../controllers/workouts/workouts.js";
 const router = Router();
 
 router.get("/", workouts.getWorkoutsHandler);
+router.get("/today", workouts.getTodaysWorkoutHandler);
+router.post("/rest", workouts.newRestDayHandler);
 router.post("/", workouts.newWorkoutHandler);
 router.patch("/reorder", workouts.reorderWorkoutsHandler);
 router.patch("/:workoutId", workouts.updateWorkoutHandler);

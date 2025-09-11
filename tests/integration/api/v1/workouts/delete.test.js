@@ -33,6 +33,7 @@ describe("DELETE /api/v1/workouts", () => {
         id: createdWorkout.id,
         user_id: createdUser.id,
         name: createdWorkout.name,
+        is_rest: false,
         sequence_index: createdWorkout.sequence_index,
         last_date: responseBody.last_date,
         created_at: responseBody.created_at,
@@ -40,7 +41,7 @@ describe("DELETE /api/v1/workouts", () => {
       });
 
       expect(uuidVersion(responseBody.id)).toBe(4);
-      expect(Date.parse(responseBody.last_date)).not.toBeNaN();
+
       expect(Date.parse(responseBody.created_at)).not.toBeNaN();
       expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
 
