@@ -21,7 +21,7 @@ async function newWorkoutHandler(request, response, next) {
 async function updateWorkoutHandler(request, response, next) {
   try {
     const { complete, name } = request.body;
-    const workoutId = request.params.id;
+    const { workoutId } = request.params;
     const sessionToken = request.cookies.session_id;
     const sessionObject = await session.findOneValidByToken(sessionToken);
     const userId = sessionObject.user_id;
@@ -80,11 +80,28 @@ async function getWorkoutsHandler(request, response, next) {
   }
 }
 
+async function deleteWorkoutHandler(request, response, next) {
+  try {
+    const { workoutId } = request.params;
+
+    const sessionToken = request.cookies.session_id;
+    const sessionObject = await session.findOneValidByToken(sessionToken);
+    const userId = sessionObject.user_id;
+
+    const deletedWorkout = await workout.deleteOneById(workoutId, userId);
+
+    return response.status(200).json(deletedWorkout);
+  } catch (error) {
+    next(error);
+  }
+}
+
 const workouts = {
   newWorkoutHandler,
   getWorkoutsHandler,
   updateWorkoutHandler,
   reorderWorkoutsHandler,
+  deleteWorkoutHandler,
 };
 
 export default workouts;
