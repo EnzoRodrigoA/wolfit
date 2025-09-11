@@ -62,17 +62,17 @@ async function findAllByUserId(userId) {
         workouts
       WHERE
         user_id = $1
+      ORDER BY sequence_index ASC
       ;`,
       values: [userId],
     });
 
     if (results.rowCount === 0) {
       throw new NotFoundError({
-        message: "Treino não encontrado",
-        action: "Verifique se o treino foi criado corretamente",
+        message: "Treino não encontrado.",
+        action: "Verifique se o treino foi enviado corretamente.",
       });
     }
-
     return results.rows[0];
   }
 }
@@ -97,6 +97,34 @@ async function completeWorkout(workoutId, userId) {
       values: [workoutId, userId],
     });
 
+    return results.rows[0];
+  }
+}
+
+async function deleteOneById(workoutId, userId) {
+  const deletedWorkout = await runDeleteQuery(workoutId, userId);
+  return deletedWorkout;
+
+  async function runDeleteQuery(workoutId, userId) {
+    const results = await database.query({
+      text: `
+        DELETE FROM
+          workouts
+        WHERE
+          id = $1
+        AND
+          user_id = $2
+        RETURNING
+          *
+      ;`,
+      values: [workoutId, userId],
+    });
+    if (results.rowCount === 0) {
+      throw new NotFoundError({
+        message: "Treino não encontrado",
+        action: "Verifique se o treino foi criado corretamente",
+      });
+    }
     return results.rows[0];
   }
 }
@@ -133,8 +161,8 @@ async function updateWorkout(workoutId, userId, name) {
 }
 
 async function reorderWorkouts(userId, order) {
-  const reordenedWorkout = await runUpdatedQuery(userId, order);
-  return reordenedWorkout;
+  const reorderedWorkout = await runUpdatedQuery(userId, order);
+  return reorderedWorkout;
 
   async function runUpdatedQuery(userId, order) {
     const valuesClause = order
@@ -173,6 +201,7 @@ const workout = {
   updateWorkout,
   findAllByUserId,
   reorderWorkouts,
+  deleteOneById,
 };
 
 export default workout;

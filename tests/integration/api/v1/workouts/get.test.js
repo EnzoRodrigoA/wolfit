@@ -1,3 +1,5 @@
+import { version as uuidVersion } from "uuid";
+
 import orchestrator from "../../../../orchestrator";
 
 beforeAll(async () => {
@@ -24,6 +26,12 @@ describe("GET /api/v1/workouts", () => {
       expect(response.status).toBe(200);
 
       const responseBody = await response.json();
+
+      expect(uuidVersion(responseBody.id)).toBe(4);
+      expect(Date.parse(responseBody.last_date)).not.toBeNaN();
+      expect(Date.parse(responseBody.created_at)).not.toBeNaN();
+      expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
+
       expect(responseBody).toEqual({
         id: createdWorkout.id,
         name: createdWorkout.name,

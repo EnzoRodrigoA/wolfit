@@ -6,6 +6,7 @@ import migrator from "#src/v1/models/migrator.js";
 import user from "#src/v1/models/user.js";
 import session from "#src/v1/models/session.js";
 import workout from "#src/v1/models/workout.js";
+import workoutExercise from "#src/v1/models/workoutExercise.js";
 
 const emailHttpUrl = `http://${process.env.EMAIL_HTTP_HOST}:${process.env.EMAIL_HTTP_PORT}`;
 
@@ -68,6 +69,14 @@ async function createWorkout(userId, name) {
   return await workout.createWorkout(userId, name || "Treino padrão");
 }
 
+async function addWorkoutExercise(workoutId, exerciseId, userId) {
+  return await workoutExercise.addExerciseToWorkout(
+    workoutId,
+    exerciseId,
+    userId,
+  );
+}
+
 async function deleteAllEmails() {
   try {
     await fetch(`${emailHttpUrl}/messages`, {
@@ -100,6 +109,7 @@ const orchestrator = {
   createUser,
   createSession,
   createWorkout,
+  addWorkoutExercise,
   deleteAllEmails,
   getLastEmail,
 };
