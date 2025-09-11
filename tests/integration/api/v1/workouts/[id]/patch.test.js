@@ -33,13 +33,9 @@ describe("PATCH /api/v1/workouts/[workoutId]", () => {
       expect(response.status).toBe(200);
 
       const responseBody = await response.json();
-      expect(responseBody.sequence_index).toBeGreaterThan(
+      expect(responseBody.inWorkouts.sequence_index).toBeGreaterThan(
         createdWorkout.sequence_index,
       );
-      const lastDateBefore = new Date(responseBody.last_date);
-      const lastDateAfter = new Date(createdWorkout.last_date);
-
-      expect(lastDateBefore.getTime()).toBeGreaterThan(lastDateAfter.getTime());
     });
 
     test("With edited name", async () => {
@@ -67,12 +63,28 @@ describe("PATCH /api/v1/workouts/[workoutId]", () => {
 
       expect(response.status).toBe(200);
       const responseBody = await response.json();
-      expect(responseBody.name).toBe("Treino A");
 
-      const createdAt = new Date(responseBody.created_at);
-      const updatedAt = new Date(responseBody.updated_at);
+      const responseWorkouts = responseBody.inWorkouts;
+      const responseWorkoutQueue = responseBody.inWorkoutQueue;
 
-      expect(updatedAt.getTime()).toBeGreaterThan(createdAt.getTime());
+      expect(responseWorkouts.name).toBe("Treino A");
+      expect(responseWorkoutQueue.name).toBe("Treino A");
+
+      const createdAtWorkouts = new Date(responseBody.inWorkouts.created_at);
+      const updatedAtWorkouts = new Date(responseBody.inWorkouts.updated_at);
+      const createdAtWorkoutQueue = new Date(
+        responseBody.inWorkouts.created_at,
+      );
+      const updatedAtWorkoutQueue = new Date(
+        responseBody.inWorkouts.updated_at,
+      );
+
+      expect(updatedAtWorkouts.getTime()).toBeGreaterThan(
+        createdAtWorkouts.getTime(),
+      );
+      expect(updatedAtWorkoutQueue.getTime()).toBeGreaterThan(
+        createdAtWorkoutQueue.getTime(),
+      );
     });
   });
 });

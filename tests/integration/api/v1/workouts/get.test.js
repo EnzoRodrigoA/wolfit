@@ -28,7 +28,6 @@ describe("GET /api/v1/workouts", () => {
       const responseBody = await response.json();
 
       expect(uuidVersion(responseBody.id)).toBe(4);
-      expect(Date.parse(responseBody.last_date)).not.toBeNaN();
       expect(Date.parse(responseBody.created_at)).not.toBeNaN();
       expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
 
@@ -36,8 +35,8 @@ describe("GET /api/v1/workouts", () => {
         id: createdWorkout.id,
         name: createdWorkout.name,
         user_id: sessionObject.user_id,
+        is_rest: false,
         sequence_index: 1,
-        last_date: createdWorkout.last_date.toISOString(),
         updated_at: createdWorkout.updated_at.toISOString(),
         created_at: createdWorkout.created_at.toISOString(),
       });
@@ -54,6 +53,14 @@ describe("GET /api/v1/workouts", () => {
       });
 
       expect(response.status).toBe(404);
+
+      const responseBody = await response.json();
+      expect(responseBody).toEqual({
+        action: "Verifique se o treino foi enviado corretamente.",
+        message: "Treino não encontrado.",
+        name: "NotFoundError",
+        status_code: 404,
+      });
     });
   });
 });
