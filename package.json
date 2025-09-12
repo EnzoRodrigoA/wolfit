@@ -22,7 +22,7 @@
     "lint:eslint:check": "eslint ./src",
     "migrations:create": "node-pg-migrate -m src/infra/migrations create",
     "migrations:up": "dotenv -e .env.development -- node-pg-migrate -m src/infra/migrations up",
-    "prepare": "is-ci || husky",
+    "prepare": "husky",
     "commit": "cz"
   },
   "author": "",
@@ -54,7 +54,6 @@
     "eslint-plugin-jest": "29.0.1",
     "globals": "16.3.0",
     "husky": "9.1.7",
-    "is-ci": "4.1.0",
     "jest": "30.0.5",
     "nodemon": "3.1.10",
     "prettier": "3.6.2",
