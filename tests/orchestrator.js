@@ -69,6 +69,10 @@ async function createWorkout(userId, name) {
   return await workout.createWorkout(userId, name || "Treino padrão");
 }
 
+async function completeWorkout(userId, workoutId) {
+  return await workout.completeWorkout(userId, workoutId);
+}
+
 async function createRestDay(userId) {
   return await workout.createRestDay(userId);
 }
@@ -113,6 +117,7 @@ const orchestrator = {
   createUser,
   createSession,
   createWorkout,
+  completeWorkout,
   createRestDay,
   addWorkoutExercise,
   deleteAllEmails,

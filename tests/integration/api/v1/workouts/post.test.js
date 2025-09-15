@@ -37,7 +37,6 @@ describe("POST /api/v1/workouts", () => {
 
       expect(response1Body.name).toBe(workoutName1);
       expect(response1Body.user_id).toBe(createdUser.id);
-      expect(response1Body.sequence_index).toBe(1);
 
       const workoutName2 = "Costas e Bíceps";
 
@@ -63,9 +62,6 @@ describe("POST /api/v1/workouts", () => {
 
       expect(response2Body.name).toBe(workoutName2);
       expect(response2Body.user_id).toBe(createdUser.id);
-      expect(response2Body.sequence_index).toBe(
-        response1Body.sequence_index + 1,
-      );
     });
 
     test("With invalid user session", async () => {

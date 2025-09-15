@@ -16,11 +16,6 @@ export const up = (pgm) => {
       notNull: true,
     },
 
-    sequence_index: {
-      type: "integer",
-      notNull: true,
-    },
-
     is_rest: {
       type: "boolean",
       notNull: true,

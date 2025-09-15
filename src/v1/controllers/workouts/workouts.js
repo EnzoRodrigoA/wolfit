@@ -42,9 +42,9 @@ async function updateWorkoutHandler(request, response, next) {
 
     let updatedWorkout;
     if (name) {
-      updatedWorkout = await workout.updateWorkout(workoutId, userId, name);
+      updatedWorkout = await workout.updateWorkout(userId, workoutId, name);
     } else if (complete === true) {
-      updatedWorkout = await workout.completeWorkout(workoutId, userId);
+      updatedWorkout = await workout.completeWorkout(userId, workoutId);
     } else {
       throw new ValidationError({
         message: "Dados não inseridos ou inválidos",

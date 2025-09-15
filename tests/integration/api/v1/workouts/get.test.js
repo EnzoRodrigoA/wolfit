@@ -36,7 +36,6 @@ describe("GET /api/v1/workouts", () => {
         name: createdWorkout.name,
         user_id: sessionObject.user_id,
         is_rest: false,
-        sequence_index: 1,
         updated_at: createdWorkout.updated_at.toISOString(),
         created_at: createdWorkout.created_at.toISOString(),
       });
