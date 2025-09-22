@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import dotenvExpand from "dotenv-expand";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 import logger from "./middlewares/logger.js";
 import globalErrorCatcher from "./middlewares/globalErrorCatcher.js";
@@ -13,6 +14,12 @@ const app = express();
 const port = process.env.PORT || 3030;
 
 app.use(express.json());
+app.use(
+  cors({
+    origin: "http//192.168.1.227:8081",
+    credentials: true,
+  }),
+);
 app.use(logger);
 app.use(cookieParser());
 

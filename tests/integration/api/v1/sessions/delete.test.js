@@ -116,6 +116,7 @@ describe("DELETE /api/v1/sessions", () => {
         maxAge: -1,
         path: "/",
         httpOnly: true,
+        sameSite: "None",
       });
 
       //Doble check assertions

@@ -7,6 +7,7 @@ async function setSessionCookie(sessionToken, response) {
     maxAge: session.EXPIRATION_IN_MILLISECONDS / 1000,
     secure: process.env.NODE_ENV === "production" ? true : false,
     httpOnly: true,
+    sameSite: "none",
   });
 
   response.setHeader("Set-Cookie", setCookie);
@@ -18,6 +19,7 @@ async function clearSessionCookie(response) {
     maxAge: -1,
     secure: process.env.NODE_ENV === "production" ? true : false,
     httpOnly: true,
+    sameSite: "none",
   });
 
   response.setHeader("Set-Cookie", setCookie);
