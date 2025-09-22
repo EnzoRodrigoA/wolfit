@@ -16,7 +16,7 @@ const port = process.env.PORT || 3030;
 app.use(express.json());
 app.use(
   cors({
-    origin: "exp//192.168.1.227:8081",
+    origin: "http://192.168.1.227:8081",
     credentials: true,
   }),
 );
