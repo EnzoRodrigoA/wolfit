@@ -34,7 +34,7 @@ describe("GET /api/v1/workouts", () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Cookie: `session_id=${sessionObject.token}`,
+          Authorization: `Bearer ${sessionObject.token}`,
         },
         body: JSON.stringify({
           workoutExerciseId: addedWorkoutExercise.id,
@@ -47,7 +47,7 @@ describe("GET /api/v1/workouts", () => {
         `http://localhost:3030/api/v1/top-set/${addedWorkoutExercise.id}`,
         {
           headers: {
-            Cookie: `session_id=${sessionObject.token}`,
+            Authorization: `Bearer ${sessionObject.token}`,
           },
         },
       );
@@ -67,7 +67,7 @@ describe("GET /api/v1/workouts", () => {
         `http://localhost:3030/api/v1/workout-exercises/${createdDefaultWorkout.id}`,
         {
           headers: {
-            Cookie: `session_id=${sessionObject.token}`,
+            Authorization: `Bearer ${sessionObject.token}`,
           },
         },
       );
@@ -78,7 +78,7 @@ describe("GET /api/v1/workouts", () => {
         `http://localhost:3030/api/v1/top-set/${workoutExerciseData[0].id}`,
         {
           headers: {
-            Cookie: `session_id=${sessionObject.token}`,
+            Authorization: `Bearer ${sessionObject.token}`,
           },
         },
       );

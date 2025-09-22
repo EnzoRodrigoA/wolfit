@@ -1,12 +1,19 @@
 import workout from "../../models/workout.js";
 import session from "#src/v1/models/session.js";
-import { ValidationError } from "#src/infra/errors.js";
+import { ValidationError, UnauthorizedError } from "#src/infra/errors.js";
 
 async function newWorkoutHandler(request, response, next) {
   try {
     const { name } = request.body;
 
-    const sessionToken = request.cookies.session_id;
+    const authHeader = request.headers.authorization;
+    if (!authHeader) {
+      throw new UnauthorizedError({
+        message: "Usuário não possui sessão válida.",
+        action: "Verifique se o usuário está logado e tente novamente.",
+      });
+    }
+    const sessionToken = authHeader.split(" ")[1];
 
     const sessionObject = await session.findOneValidByToken(sessionToken);
     const userId = sessionObject.user_id;
@@ -20,7 +27,14 @@ async function newWorkoutHandler(request, response, next) {
 
 async function newRestDayHandler(request, response, next) {
   try {
-    const sessionToken = request.cookies.session_id;
+    const authHeader = request.headers.authorization;
+    if (!authHeader) {
+      throw new UnauthorizedError({
+        message: "Usuário não possui sessão válida.",
+        action: "Verifique se o usuário está logado e tente novamente.",
+      });
+    }
+    const sessionToken = authHeader.split(" ")[1];
 
     const sessionObject = await session.findOneValidByToken(sessionToken);
     const userId = sessionObject.user_id;
@@ -36,7 +50,14 @@ async function updateWorkoutHandler(request, response, next) {
   try {
     const { complete, name } = request.body;
     const { workoutId } = request.params;
-    const sessionToken = request.cookies.session_id;
+    const authHeader = request.headers.authorization;
+    if (!authHeader) {
+      throw new UnauthorizedError({
+        message: "Usuário não possui sessão válida.",
+        action: "Verifique se o usuário está logado e tente novamente.",
+      });
+    }
+    const sessionToken = authHeader.split(" ")[1];
     const sessionObject = await session.findOneValidByToken(sessionToken);
     const userId = sessionObject.user_id;
 
@@ -60,7 +81,14 @@ async function updateWorkoutHandler(request, response, next) {
 async function reorderWorkoutsHandler(request, response, next) {
   try {
     const { order } = request.body;
-    const sessionToken = request.cookies.session_id;
+    const authHeader = request.headers.authorization;
+    if (!authHeader) {
+      throw new UnauthorizedError({
+        message: "Usuário não possui sessão válida.",
+        action: "Verifique se o usuário está logado e tente novamente.",
+      });
+    }
+    const sessionToken = authHeader.split(" ")[1];
 
     const sessionObject = await session.findOneValidByToken(sessionToken);
     const userId = sessionObject.user_id;
@@ -82,7 +110,14 @@ async function reorderWorkoutsHandler(request, response, next) {
 
 async function getWorkoutsHandler(request, response, next) {
   try {
-    const sessionToken = request.cookies.session_id;
+    const authHeader = request.headers.authorization;
+    if (!authHeader) {
+      throw new UnauthorizedError({
+        message: "Usuário não possui sessão válida.",
+        action: "Verifique se o usuário está logado e tente novamente.",
+      });
+    }
+    const sessionToken = authHeader.split(" ")[1];
     const sessionObject = await session.findOneValidByToken(sessionToken);
     const userId = sessionObject.user_id;
 
@@ -96,7 +131,14 @@ async function getWorkoutsHandler(request, response, next) {
 
 async function getTodaysWorkoutHandler(request, response, next) {
   try {
-    const sessionToken = request.cookies.session_id;
+    const authHeader = request.headers.authorization;
+    if (!authHeader) {
+      throw new UnauthorizedError({
+        message: "Usuário não possui sessão válida.",
+        action: "Verifique se o usuário está logado e tente novamente.",
+      });
+    }
+    const sessionToken = authHeader.split(" ")[1];
     const sessionObject = await session.findOneValidByToken(sessionToken);
     const userId = sessionObject.user_id;
 
@@ -112,7 +154,14 @@ async function deleteWorkoutHandler(request, response, next) {
   try {
     const { workoutId } = request.params;
 
-    const sessionToken = request.cookies.session_id;
+    const authHeader = request.headers.authorization;
+    if (!authHeader) {
+      throw new UnauthorizedError({
+        message: "Usuário não possui sessão válida.",
+        action: "Verifique se o usuário está logado e tente novamente.",
+      });
+    }
+    const sessionToken = authHeader.split(" ")[1];
     const sessionObject = await session.findOneValidByToken(sessionToken);
     const userId = sessionObject.user_id;
 

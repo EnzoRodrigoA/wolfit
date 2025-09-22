@@ -35,7 +35,7 @@ describe("POST /api/v1/top-set", () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Cookie: `session_id=${sessionObject.token}`,
+          Authorization: `Bearer ${sessionObject.token}`,
         },
         body: JSON.stringify({
           workoutExerciseId: addedWorkoutExercise.id,
@@ -95,7 +95,7 @@ describe("POST /api/v1/top-set", () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Cookie: `session_id=${sessionObject.token}`,
+          Authorization: `Bearer ${sessionObject.token}`,
         },
         body: JSON.stringify({
           workoutExerciseId: addedWorkoutExercise.id,
@@ -155,7 +155,7 @@ describe("POST /api/v1/top-set", () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Cookie: `session_id=${sessionObject.token}`,
+          Authorization: `Bearer ${sessionObject.token}`,
         },
         body: JSON.stringify({
           workoutExerciseId: addedWorkoutExercise.id,
@@ -215,7 +215,7 @@ describe("POST /api/v1/top-set", () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Cookie: `session_id=${sessionObject.token}`,
+          Authorization: `Bearer ${sessionObject.token}`,
         },
         body: JSON.stringify({
           workoutExerciseId: addedWorkoutExercise.id,

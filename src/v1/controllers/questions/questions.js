@@ -3,8 +3,14 @@ import session from "#src/v1/models/session.js";
 
 async function getQuestions(request, response, next) {
   try {
-    const sessionToken = request.cookies.session_id;
-
+    const authHeader = request.headers.authorization;
+    if (!authHeader) {
+      throw new UnauthorizedError({
+        message: "Usuário não possui sessão válida.",
+        action: "Verifique se o usuário está logado e tente novamente.",
+      });
+    }
+    const sessionToken = authHeader.split(" ")[1];
     const sessionObject = await session.findOneValidByToken(sessionToken);
     const userId = sessionObject.user_id;
     if (!userId) {

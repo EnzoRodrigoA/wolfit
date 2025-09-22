@@ -1,4 +1,3 @@
-import controller from "#src/infra/controller.js";
 import { InternalServerError, UnauthorizedError } from "#src/infra/errors.js";
 
 // eslint-disable-next-line no-unused-vars
@@ -19,7 +18,6 @@ export default function globalErrorCatcher(error, request, response, next) {
     }
   }
   if (error instanceof UnauthorizedError) {
-    controller.clearSessionCookie(response);
     return response.status(statusCode).json(publicErrorObject);
   }
   response.status(statusCode).json(publicErrorObject);

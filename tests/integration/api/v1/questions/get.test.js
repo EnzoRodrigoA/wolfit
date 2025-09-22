@@ -14,7 +14,7 @@ describe("GET /api/v1/questions", () => {
 
       const response = await fetch("http://localhost:3030/api/v1/questions", {
         headers: {
-          Cookie: `session_id=${sessionObject.token}`,
+          Authorization: `Bearer ${sessionObject.token}`,
         },
       });
 

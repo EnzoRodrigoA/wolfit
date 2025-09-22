@@ -18,7 +18,7 @@ describe("POST /api/v1/user-settings", () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Cookie: `session_id=${sessionObject.token}`,
+            Authorization: `Bearer ${sessionObject.token}`,
           },
           body: JSON.stringify({
             date_of_birth: "2003-05-10",
