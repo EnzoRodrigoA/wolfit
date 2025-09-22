@@ -60,11 +60,13 @@ async function findWorkoutExercisesByWorkoutId(workoutId, userId) {
     const results = await database.query({
       text: `
         SELECT 
-          we.*
+          we.*, e.exercise_name AS name
         FROM
           workout_exercise we
         JOIN
           workouts w ON w.id = we.workout_id 
+        JOIN
+          exercises e ON e.id = we.exercise_id
         WHERE
           we.workout_id = $1
         AND
@@ -81,7 +83,7 @@ async function findWorkoutExercisesByWorkoutId(workoutId, userId) {
       });
     }
 
-    return results.rows[0];
+    return results.rows;
   }
 }
 

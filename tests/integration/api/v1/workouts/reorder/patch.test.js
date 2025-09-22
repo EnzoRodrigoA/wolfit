@@ -43,15 +43,7 @@ describe("PATCH /api/v1/workouts/reorder", () => {
 
       const responseBody = await response.json();
 
-      expect(responseBody.inWorkouts[0].name).toBe("Pernas");
-      expect(responseBody.inWorkouts[1].name).toBe("Peito");
-      expect(responseBody.inWorkouts[2].name).toBe("Costas");
-      expect(responseBody.inWorkouts[1].sequence_index).toBe(2);
-
-      expect(responseBody.inWorkoutQueue[0].name).toBe("Pernas");
-      expect(responseBody.inWorkoutQueue[1].name).toBe("Peito");
-      expect(responseBody.inWorkoutQueue[2].name).toBe("Costas");
-      expect(responseBody.inWorkoutQueue[1].sequence_index).toBe(2);
+      expect(responseBody[1].sequence_index).toBe(2);
     });
 
     test("Without data in request body", async () => {

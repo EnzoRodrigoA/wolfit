@@ -1,6 +1,5 @@
 import { version as uuidVersion } from "uuid";
 import orchestrator from "../../../../../orchestrator.js";
-import workout from "#src/v1/models/workout.js";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -10,15 +9,29 @@ beforeAll(async () => {
 
 describe("GET /api/v1/workouts/today", () => {
   describe("Default user", () => {
-    test("With first workout", async () => {
+    test("Should return workouts in cyclic order", async () => {
       const createdUser = await orchestrator.createUser({});
       const sessionObject = await orchestrator.createSession(createdUser.id);
 
-      const createdWorkout = await orchestrator.createWorkout(
+      const createdWorkout1 = await orchestrator.createWorkout(
         sessionObject.user_id,
+        "Treino A",
+      );
+      const createdWorkout2 = await orchestrator.createWorkout(
+        sessionObject.user_id,
+        "Treino B",
+      );
+      const createdWorkout3 = await orchestrator.createWorkout(
+        sessionObject.user_id,
+        "Treino C",
       );
 
-      const response = await fetch(
+      await orchestrator.completeWorkout(
+        sessionObject.user_id,
+        createdWorkout1.id,
+      );
+
+      let response = await fetch(
         "http://localhost:3030/api/v1/workouts/today",
         {
           headers: {
@@ -26,25 +39,40 @@ describe("GET /api/v1/workouts/today", () => {
           },
         },
       );
-
       expect(response.status).toBe(200);
+      let responseBody = await response.json();
 
-      const responseBody = await response.json();
+      expect(responseBody.name).toBe("Treino B");
 
-      expect(uuidVersion(responseBody.id)).toBe(4);
-      expect(Date.parse(responseBody.created_at)).not.toBeNaN();
-      expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
+      await orchestrator.completeWorkout(
+        sessionObject.user_id,
+        createdWorkout2.id,
+      );
 
-      expect(responseBody).toEqual({
-        id: responseBody.id,
-        name: createdWorkout.name,
-        user_id: sessionObject.user_id,
-        workout_id: createdWorkout.id,
-        sequence_index: 1,
-        completed_at: responseBody.completed_at,
-        updated_at: responseBody.updated_at,
-        created_at: responseBody.created_at,
+      response = await fetch("http://localhost:3030/api/v1/workouts/today", {
+        headers: {
+          Cookie: `session_id=${sessionObject.token}`,
+        },
       });
+
+      responseBody = await response.json();
+
+      expect(responseBody.name).toBe("Treino C");
+
+      await orchestrator.completeWorkout(
+        sessionObject.user_id,
+        createdWorkout3.id,
+      );
+
+      response = await fetch("http://localhost:3030/api/v1/workouts/today", {
+        headers: {
+          Cookie: `session_id=${sessionObject.token}`,
+        },
+      });
+
+      responseBody = await response.json();
+
+      expect(responseBody.name).toBe("Treino A");
     });
 
     test("With rest day", async () => {
@@ -53,12 +81,14 @@ describe("GET /api/v1/workouts/today", () => {
 
       const createdWorkout = await orchestrator.createWorkout(
         sessionObject.user_id,
+        "Treino A",
       );
-      const createdRest = await orchestrator.createRestDay(
-        sessionObject.user_id,
-      );
+      await orchestrator.createRestDay(sessionObject.user_id);
 
-      await workout.completeWorkout(createdWorkout.id, sessionObject.user_id);
+      await orchestrator.completeWorkout(
+        sessionObject.user_id,
+        createdWorkout.id,
+      );
 
       const response = await fetch(
         "http://localhost:3030/api/v1/workouts/today",
@@ -73,39 +103,48 @@ describe("GET /api/v1/workouts/today", () => {
 
       const responseBody = await response.json();
 
+      expect(responseBody.name).toBe("Descanso");
       expect(uuidVersion(responseBody.id)).toBe(4);
-      expect(Date.parse(responseBody.created_at)).not.toBeNaN();
-      expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
-
-      expect(responseBody).toEqual({
-        id: responseBody.id,
-        name: createdRest.name,
-        user_id: sessionObject.user_id,
-        workout_id: createdRest.id,
-        sequence_index: 2,
-        completed_at: responseBody.completed_at,
-        updated_at: responseBody.updated_at,
-        created_at: responseBody.created_at,
-      });
     });
 
     test("With second verification", async () => {
       const createdUser = await orchestrator.createUser({});
       const sessionObject = await orchestrator.createSession(createdUser.id);
 
-      const createdWorkout = await orchestrator.createWorkout(
+      const createdWorkout1 = await orchestrator.createWorkout(
         sessionObject.user_id,
-      );
-      const createdRest = await orchestrator.createRestDay(
-        sessionObject.user_id,
-      );
-      const createdWorkout2 = await orchestrator.createWorkout(
-        sessionObject.user_id,
-        "Costas e bíceps",
+        "Treino A",
       );
 
-      await workout.completeWorkout(createdWorkout.id, sessionObject.user_id);
-      await workout.completeWorkout(createdRest.id, sessionObject.user_id);
+      const createdRest1 = await orchestrator.createRestDay(
+        sessionObject.user_id,
+      );
+
+      const createdWorkout2 = await orchestrator.createWorkout(
+        sessionObject.user_id,
+        "Treino B",
+      );
+
+      const createdRest2 = await orchestrator.createRestDay(
+        sessionObject.user_id,
+      );
+
+      await orchestrator.completeWorkout(
+        sessionObject.user_id,
+        createdWorkout1.id,
+      );
+      await orchestrator.completeWorkout(
+        sessionObject.user_id,
+        createdRest1.id,
+      );
+      await orchestrator.completeWorkout(
+        sessionObject.user_id,
+        createdWorkout2.id,
+      );
+      await orchestrator.completeWorkout(
+        sessionObject.user_id,
+        createdRest2.id,
+      );
 
       const response = await fetch(
         "http://localhost:3030/api/v1/workouts/today",
@@ -119,21 +158,7 @@ describe("GET /api/v1/workouts/today", () => {
       expect(response.status).toBe(200);
 
       const responseBody = await response.json();
-
-      expect(uuidVersion(responseBody.id)).toBe(4);
-      expect(Date.parse(responseBody.created_at)).not.toBeNaN();
-      expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
-
-      expect(responseBody).toEqual({
-        id: responseBody.id,
-        name: "Costas e bíceps",
-        user_id: sessionObject.user_id,
-        workout_id: createdWorkout2.id,
-        sequence_index: 3,
-        completed_at: responseBody.completed_at,
-        updated_at: responseBody.updated_at,
-        created_at: responseBody.created_at,
-      });
+      expect(responseBody.name).toBe("Treino A");
     });
   });
 });

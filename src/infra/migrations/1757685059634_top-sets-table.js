@@ -1,5 +1,5 @@
 export const up = (pgm) => {
-  pgm.createTable("workouts", {
+  pgm.createTable("top_sets", {
     id: {
       type: "uuid",
       primaryKey: true,
@@ -11,35 +11,38 @@ export const up = (pgm) => {
       notNull: true,
     },
 
-    name: {
-      type: "varchar(100)",
+    workout_exercise_id: {
+      type: "uuid",
       notNull: true,
     },
 
-    is_rest: {
-      type: "boolean",
+    load: {
+      type: "numeric",
       notNull: true,
-      default: false,
     },
 
-    created_at: {
-      type: "timestamptz",
+    reps: {
+      type: "integer",
       notNull: true,
-      default: pgm.func("timezone('utc', now())"),
     },
 
-    updated_at: {
+    date: {
       type: "timestamptz",
       notNull: true,
       default: pgm.func("timezone('utc', now())"),
     },
   });
 
-  pgm.createTable("workout_exercise", {
+  pgm.createTable("workout_history", {
     id: {
       type: "uuid",
       primaryKey: true,
       default: pgm.func("gen_random_uuid()"),
+    },
+
+    user_id: {
+      type: "uuid",
+      notNull: true,
     },
 
     workout_id: {
@@ -47,26 +50,9 @@ export const up = (pgm) => {
       notNull: true,
     },
 
-    exercise_id: {
-      type: "uuid",
-      notNull: true,
-    },
-
-    exercise_sequence: {
-      type: "integer",
-      notNull: true,
-    },
-
-    created_at: {
+    completed_at: {
       type: "timestamptz",
       notNull: true,
-      default: pgm.func("timezone('utc', now())"),
-    },
-
-    updated_at: {
-      type: "timestamptz",
-      notNull: true,
-      default: pgm.func("timezone('utc', now())"),
     },
   });
 };

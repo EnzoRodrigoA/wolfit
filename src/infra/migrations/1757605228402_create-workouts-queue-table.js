@@ -6,11 +6,6 @@ export const up = (pgm) => {
       default: pgm.func("gen_random_uuid()"),
     },
 
-    name: {
-      type: "varchar(100)",
-      notNull: true,
-    },
-
     user_id: {
       type: "uuid",
       notNull: true,
@@ -18,7 +13,7 @@ export const up = (pgm) => {
 
     workout_id: {
       type: "uuid",
-      notNull: false,
+      notNull: true,
     },
 
     sequence_index: {
@@ -26,20 +21,9 @@ export const up = (pgm) => {
       notNull: true,
     },
 
-    completed_at: {
+    last_date: {
       type: "timestamptz",
       notNull: false,
-    },
-
-    created_at: {
-      type: "timestamptz",
-      notNull: true,
-      default: pgm.func("timezone('utc', now())"),
-    },
-
-    updated_at: {
-      type: "timestamptz",
-      notNull: true,
       default: pgm.func("timezone('utc', now())"),
     },
   });

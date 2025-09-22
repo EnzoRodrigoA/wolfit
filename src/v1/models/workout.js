@@ -5,7 +5,7 @@ import {
   NotFoundError,
 } from "#src/infra/errors.js";
 
-async function addWorkoutToQueue(userId, workoutId, workoutName) {
+async function addWorkoutToQueue(userId, workoutId) {
   const result = await database.query({
     text: `
         SELECT COALESCE(MAX(sequence_index), 0) 
@@ -22,13 +22,13 @@ async function addWorkoutToQueue(userId, workoutId, workoutName) {
   const insertResult = await database.query({
     text: `
         INSERT INTO
-          workout_queue (user_id, workout_id, name, sequence_index)
+          workout_queue (user_id, workout_id, sequence_index)
         VALUES
-          ($1, $2, $3, $4)
+          ($1, $2, $3)
         RETURNING 
           *  
       ;`,
-    values: [userId, workoutId, workoutName, nextIndex],
+    values: [userId, workoutId, nextIndex],
   });
   return insertResult.rows[0];
 }
@@ -48,12 +48,11 @@ async function createWorkout(userId, name) {
     const results = await database.query({
       text: `
         INSERT INTO
-          workouts (user_id, name, sequence_index)
+          workouts (user_id, name)
         VALUES
           (
             $1,
-            $2,
-            COALESCE((SELECT MAX(sequence_index) + 1 FROM workouts WHERE user_id = $1), 1)
+            $2
           )
         RETURNING
           *
@@ -82,13 +81,12 @@ async function createRestDay(userId) {
     const results = await database.query({
       text: `
         INSERT INTO
-          workouts (user_id, name, is_rest, sequence_index)
+          workouts (user_id, name, is_rest)
         VALUES
           (
             $1,
             $2,
-            true,
-            COALESCE((SELECT MAX(sequence_index) + 1 FROM workouts WHERE user_id = $1), 1)
+            true
           )
         RETURNING
           *
@@ -127,7 +125,6 @@ async function findAllByUserId(userId) {
         workouts
       WHERE
         user_id = $1
-      ORDER BY sequence_index ASC
       ;`,
       values: [userId],
     });
@@ -153,84 +150,64 @@ async function getTodaysWorkout(userId) {
   return todaysWorkout;
 
   async function runSelectQuery(userId) {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
     const results = await database.query({
       text: `
-      SELECT 
-        *
+      SELECT
+        wq.*, w.name AS name
       FROM
-        workout_queue
+        workout_queue wq
+      JOIN
+        workouts w ON wq.workout_id = w.id 
       WHERE
-        user_id = $1
-      AND
-        (completed_at IS NULL OR completed_at::date < CURRENT_DATE)
-      ORDER BY 
-        sequence_index ASC
-      LIMIT
-        1
+        wq.user_id = $1
+      ORDER BY
+        last_date ASC, sequence_index ASC
       ;`,
       values: [userId],
     });
-    return results.rows[0] || null;
+    return results.rows[0];
   }
 }
 
-async function completeWorkout(workoutId, userId) {
-  const renewedWorkoutDate = await runUpdatedQuery(workoutId, userId);
-  return renewedWorkoutDate;
+async function completeWorkout(userId, workoutId, date) {
+  const todayWorkout = await getTodaysWorkout(userId);
 
-  async function runUpdatedQuery(workoutId, userId) {
-    const results = await database.query({
-      text: `
-        UPDATE
-          workouts
-        SET
-          
-          sequence_index = COALESCE((SELECT MAX(sequence_index) + 1 FROM workouts WHERE user_id = $2), 1)
-        WHERE
-          id = $1
-        RETURNING
-          *
-      ;`,
-      values: [workoutId, userId],
+  if (todayWorkout.workout_id !== workoutId) {
+    throw new ValidationError({
+      message: `Você deve completar ${todayWorkout.name}`,
+      action: "Complete primeiro o treino anterior",
     });
-
-    const sequenceIndex = results.rows[0].sequence_index;
-    const completedWorkoutInQueue = await completeWorkoutInQueue(
-      userId,
-      workoutId,
-      sequenceIndex,
-    );
-
-    const responseObject = {
-      inWorkouts: results.rows[0],
-      inWorkoutQueue: completedWorkoutInQueue,
-    };
-    return responseObject;
   }
 
-  async function completeWorkoutInQueue(
-    userId,
-    workoutId,
+  const renewedWorkoutDate = await runInsertQuery(userId, workoutId, date);
+  return renewedWorkoutDate;
 
-    sequenceIndex,
-  ) {
+  async function runInsertQuery(userId, workoutId, date) {
+    const workoutDate = date ? date : "NOW()";
+
     const results = await database.query({
       text: `
-        UPDATE
+      WITH ins AS (
+        INSERT INTO
+          workout_history
+            (user_id, workout_id, completed_at)
+        VALUES
+          ($1, $2, $3)
+        RETURNING
+          *
+        )
+      UPDATE
           workout_queue
         SET
-          completed_at = CURRENT_DATE,
-          sequence_index = $3
-        WHERE
+          last_date = $3
+        WHERE 
           user_id = $1
         AND
           workout_id = $2
         RETURNING
           *
-      ;`,
-      values: [userId, workoutId, sequenceIndex],
+     ;`,
+      values: [userId, workoutId, workoutDate],
     });
     return results.rows[0];
   }
@@ -264,7 +241,7 @@ async function deleteOneById(workoutId, userId) {
   }
 }
 
-async function updateWorkout(workoutId, userId, name) {
+async function updateWorkout(userId, workoutId, name) {
   if (!name || !name.trim()) {
     throw new ValidationError({
       message: "O nome do treino não pode ser vazio.",
@@ -291,36 +268,7 @@ async function updateWorkout(workoutId, userId, name) {
       ;`,
       values: [workoutId, userId, name],
     });
-    const updatedWorkoutQueue = await updateWorkoutInQueue(
-      userId,
-      workoutId,
-      name,
-    );
-    const responseObject = {
-      inWorkouts: results.rows[0],
-      inWorkoutQueue: updatedWorkoutQueue,
-    };
 
-    return responseObject;
-  }
-
-  async function updateWorkoutInQueue(userId, workoutId, name) {
-    const results = await database.query({
-      text: `
-        UPDATE
-          workout_queue
-        SET
-          updated_at = NOW(),
-          name = $3
-        WHERE
-          user_id = $1
-        AND
-          workout_id = $2
-        RETURNING
-          *
-      ;`,
-      values: [userId, workoutId, name],
-    });
     return results.rows[0];
   }
 }
@@ -338,53 +286,9 @@ async function reorderWorkouts(userId, order) {
       text: `
         WITH updated AS (
           UPDATE
-            workouts
-          SET
-            sequence_index = new_values.sequence_index,
-            updated_at = NOW()
-          FROM 
-          (
-            VALUES
-            ${valuesClause}
-          )
-          AS
-            new_values(id, sequence_index)
-          WHERE
-            workouts.id = new_values.id
-          AND
-            workouts.user_id = $1
-          RETURNING
-            workouts.*, workouts.sequence_index AS updated_sequence_index
-          )
-        SELECT
-          *
-        FROM 
-          updated
-        ORDER BY
-          updated_sequence_index ASC
-      ;`,
-      values: [userId, ...order],
-    });
-    const reorderedWorkoutQueue = await reorderWorkoutsInQueue(userId, order);
-
-    const responseObject = {
-      inWorkouts: results.rows,
-      inWorkoutQueue: reorderedWorkoutQueue,
-    };
-    return responseObject;
-  }
-  async function reorderWorkoutsInQueue(userId, order) {
-    const valuesClause = order
-      .map((id, i) => `($${i + 2}::uuid, ${i + 1})`)
-      .join(", ");
-    const results = await database.query({
-      text: `
-        WITH updated AS (
-          UPDATE
             workout_queue
           SET
-            sequence_index = new_values.sequence_index,
-            updated_at = NOW()
+            sequence_index = new_values.sequence_index
           FROM 
           (
             VALUES
@@ -408,6 +312,7 @@ async function reorderWorkouts(userId, order) {
       ;`,
       values: [userId, ...order],
     });
+
     return results.rows;
   }
 }

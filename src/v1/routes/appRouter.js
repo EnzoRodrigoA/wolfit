@@ -7,6 +7,7 @@ import SessionsRoutesV1 from "./sessions.routes.js";
 import ExercisesRoutesV1 from "./exercises.routes.js";
 import WorkoutsRoutesV1 from "./workouts.routes.js";
 import WorkoutExercisesRoutesV1 from "./workoutExercises.routes.js";
+import TopSetsRoutesV1 from "./topSet.routes.js";
 
 const router = Router();
 
@@ -18,5 +19,6 @@ router.use("/sessions", SessionsRoutesV1);
 router.use("/exercises", ExercisesRoutesV1);
 router.use("/workouts", WorkoutsRoutesV1);
 router.use("/workout-exercises", WorkoutExercisesRoutesV1);
+router.use("/top-set", TopSetsRoutesV1);
 
 export default router;
