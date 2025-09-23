@@ -1,5 +1,4 @@
 import { version as uuidVersion } from "uuid";
-import setCookieParser from "set-cookie-parser";
 import { jest } from "@jest/globals";
 
 import orchestrator from "../../../../orchestrator.js";
@@ -20,7 +19,7 @@ describe("DELETE /api/v1/sessions", () => {
       const response = await fetch("http://localhost:3030/api/v1/sessions", {
         method: "DELETE",
         headers: {
-          Cookie: `session_id=${nonexistentToken}`,
+          Authorization: `Bearer ${nonexistentToken}`,
         },
       });
 
@@ -76,7 +75,7 @@ describe("DELETE /api/v1/sessions", () => {
       const response = await fetch("http://localhost:3030/api/v1/sessions", {
         method: "DELETE",
         headers: {
-          Cookie: `session_id=${sessionObject.token}`,
+          Authorization: `Bearer ${sessionObject.token}`,
         },
       });
 
@@ -105,25 +104,12 @@ describe("DELETE /api/v1/sessions", () => {
         responseBody.updated_at > sessionObject.updated_at.toISOString(),
       ).toBe(true);
 
-      //Set-Cookie assertions
-      const parsedSetCookie = setCookieParser(response, {
-        map: true,
-      });
-
-      expect(parsedSetCookie.session_id).toEqual({
-        name: "session_id",
-        value: "invalid",
-        maxAge: -1,
-        path: "/",
-        httpOnly: true,
-      });
-
       //Doble check assertions
       const doubleCheckResponse = await fetch(
         "http://localhost:3030/api/v1/user",
         {
           headers: {
-            Cookie: `session_id=${sessionObject.token}`,
+            Authorization: `Bearer ${sessionObject.token}`,
           },
         },
       );

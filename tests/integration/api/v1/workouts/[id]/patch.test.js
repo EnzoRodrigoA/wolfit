@@ -22,7 +22,7 @@ describe("PATCH /api/v1/workouts/[workoutId]", () => {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
-            Cookie: `session_id=${sessionObject.token}`,
+            Authorization: `Bearer ${sessionObject.token}`,
           },
           body: JSON.stringify({
             complete: true,
@@ -64,7 +64,7 @@ describe("PATCH /api/v1/workouts/[workoutId]", () => {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
-            Cookie: `session_id=${sessionObject.token}`,
+            Authorization: `Bearer ${sessionObject.token}`,
           },
           body: JSON.stringify({
             complete: true,
@@ -97,7 +97,7 @@ describe("PATCH /api/v1/workouts/[workoutId]", () => {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
-            Cookie: `session_id=${sessionObject.token}`,
+            Authorization: `Bearer ${sessionObject.token}`,
           },
           body: JSON.stringify({
             name: "Treino A",
@@ -131,7 +131,7 @@ describe("PATCH /api/v1/workouts/[workoutId]", () => {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
-            Cookie: `session_id=${sessionObject.token}`,
+            Authorization: `Bearer ${sessionObject.token}`,
           },
           body: JSON.stringify({
             name: "",

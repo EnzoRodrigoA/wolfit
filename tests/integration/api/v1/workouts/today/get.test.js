@@ -35,7 +35,7 @@ describe("GET /api/v1/workouts/today", () => {
         "http://localhost:3030/api/v1/workouts/today",
         {
           headers: {
-            Cookie: `session_id=${sessionObject.token}`,
+            Authorization: `Bearer ${sessionObject.token}`,
           },
         },
       );
@@ -51,7 +51,7 @@ describe("GET /api/v1/workouts/today", () => {
 
       response = await fetch("http://localhost:3030/api/v1/workouts/today", {
         headers: {
-          Cookie: `session_id=${sessionObject.token}`,
+          Authorization: `Bearer ${sessionObject.token}`,
         },
       });
 
@@ -66,7 +66,7 @@ describe("GET /api/v1/workouts/today", () => {
 
       response = await fetch("http://localhost:3030/api/v1/workouts/today", {
         headers: {
-          Cookie: `session_id=${sessionObject.token}`,
+          Authorization: `Bearer ${sessionObject.token}`,
         },
       });
 
@@ -94,7 +94,7 @@ describe("GET /api/v1/workouts/today", () => {
         "http://localhost:3030/api/v1/workouts/today",
         {
           headers: {
-            Cookie: `session_id=${sessionObject.token}`,
+            Authorization: `Bearer ${sessionObject.token}`,
           },
         },
       );
@@ -150,7 +150,7 @@ describe("GET /api/v1/workouts/today", () => {
         "http://localhost:3030/api/v1/workouts/today",
         {
           headers: {
-            Cookie: `session_id=${sessionObject.token}`,
+            Authorization: `Bearer ${sessionObject.token}`,
           },
         },
       );

@@ -35,7 +35,7 @@ describe("DELETE /api/v1/workout-exercises", () => {
         {
           method: "DELETE",
           headers: {
-            Cookie: `session_id=${sessionObject.token}`,
+            Authorization: `Bearer ${sessionObject.token}`,
           },
         },
       );
@@ -61,7 +61,7 @@ describe("DELETE /api/v1/workout-exercises", () => {
         `http://localhost:3030/api/v1/workout-exercises/${createdWorkout.id}`,
         {
           headers: {
-            Cookie: `session_id=${sessionObject.token}`,
+            Authorization: `Bearer ${sessionObject.token}`,
           },
         },
       );

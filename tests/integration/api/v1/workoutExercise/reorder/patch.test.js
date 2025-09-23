@@ -48,7 +48,7 @@ describe("PATCH /api/v1/workout-exercises/reorder", () => {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
-            Cookie: `session_id=${sessionObject.token}`,
+            Authorization: `Bearer ${sessionObject.token}`,
           },
           body: JSON.stringify({
             order: [
@@ -73,7 +73,7 @@ describe("PATCH /api/v1/workout-exercises/reorder", () => {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
-            Cookie: `session_id=${sessionObject.token}`,
+            Authorization: `Bearer ${sessionObject.token}`,
           },
           body: JSON.stringify({}),
         },

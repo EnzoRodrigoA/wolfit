@@ -29,7 +29,7 @@ describe("POST /api/v1/workout-exercises", () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Cookie: `session_id=${sessionObject.token}`,
+            Authorization: `Bearer ${sessionObject.token}`,
           },
           body: JSON.stringify({
             workoutId: createdWorkout.id,
@@ -73,7 +73,7 @@ describe("POST /api/v1/workout-exercises", () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Cookie: `session_id=idQualquer`,
+            Authorization: `Bearer idQualquer`,
           },
           body: JSON.stringify({
             workoutId: createdWorkout.id,
@@ -110,7 +110,7 @@ describe("POST /api/v1/workout-exercises", () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Cookie: `session_id=${sessionObject.token}`,
+            Authorization: `Bearer ${sessionObject.token}`,
           },
           body: JSON.stringify({
             workoutId: "",

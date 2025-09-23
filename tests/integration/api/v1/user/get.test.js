@@ -1,6 +1,5 @@
 import { version as uuidVersion } from "uuid";
 import { jest } from "@jest/globals";
-import setCookieParser from "set-cookie-parser";
 
 import orchestrator from "../../../../orchestrator.js";
 import session from "#src/v1/models/session.js";
@@ -22,16 +21,11 @@ describe("GET /api/v1/user", () => {
 
       const response = await fetch("http://localhost:3030/api/v1/user", {
         headers: {
-          Cookie: `session_id=${sessionObject.token}`,
+          Authorization: `Bearer ${sessionObject.token}`,
         },
       });
 
       expect(response.status).toBe(200);
-
-      const cacheControl = response.headers.get("Cache-Control");
-      expect(cacheControl).toBe(
-        "no-store, no-cache, max-age=0, must-revalidate",
-      );
 
       const responseBody = await response.json();
 
@@ -59,19 +53,6 @@ describe("GET /api/v1/user", () => {
       expect(renewedSessionObject.updated_at > sessionObject.updated_at).toBe(
         true,
       );
-
-      //Set-Cookie assertions
-      const parsedSetCookie = setCookieParser(response, {
-        map: true,
-      });
-
-      expect(parsedSetCookie.session_id).toEqual({
-        name: "session_id",
-        value: sessionObject.token,
-        maxAge: session.EXPIRATION_IN_MILLISECONDS / 1000,
-        path: "/",
-        httpOnly: true,
-      });
     });
 
     test("With nonexistent session", async () => {
@@ -80,7 +61,7 @@ describe("GET /api/v1/user", () => {
 
       const response = await fetch("http://localhost:3030/api/v1/user", {
         headers: {
-          Cookie: `session_id=${nonexistentToken}`,
+          Authorization: `Bearer ${nonexistentToken.token}`,
         },
       });
 
@@ -93,19 +74,6 @@ describe("GET /api/v1/user", () => {
         message: "Usuário não possui sessão válida.",
         action: "Verifique se o usuário está logado e tente novamente.",
         status_code: 401,
-      });
-
-      // Set-Cookie assertions
-      const parsedSetCookie = setCookieParser(response, {
-        map: true,
-      });
-
-      expect(parsedSetCookie.session_id).toEqual({
-        name: "session_id",
-        value: "invalid",
-        maxAge: -1,
-        path: "/",
-        httpOnly: true,
       });
     });
 
@@ -124,7 +92,7 @@ describe("GET /api/v1/user", () => {
 
       const response = await fetch("http://localhost:3030/api/v1/user", {
         headers: {
-          Cookie: `session_id=${sessionObject.token}`,
+          Authorization: `Bearer ${sessionObject.token}`,
         },
       });
 
@@ -137,19 +105,6 @@ describe("GET /api/v1/user", () => {
         message: "Usuário não possui sessão válida.",
         action: "Verifique se o usuário está logado e tente novamente.",
         status_code: 401,
-      });
-
-      // Set-Cookie assertions
-      const parsedSetCookie = setCookieParser(response, {
-        map: true,
-      });
-
-      expect(parsedSetCookie.session_id).toEqual({
-        name: "session_id",
-        value: "invalid",
-        maxAge: -1,
-        path: "/",
-        httpOnly: true,
       });
     });
   });

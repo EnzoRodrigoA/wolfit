@@ -19,7 +19,7 @@ describe("GET /api/v1/workouts", () => {
       );
       const response = await fetch("http://localhost:3030/api/v1/workouts", {
         headers: {
-          Cookie: `session_id=${sessionObject.token}`,
+          Authorization: `Bearer ${sessionObject.token}`,
         },
       });
 
@@ -47,7 +47,7 @@ describe("GET /api/v1/workouts", () => {
 
       const response = await fetch("http://localhost:3030/api/v1/workouts", {
         headers: {
-          Cookie: `session_id=${sessionObject.token}`,
+          Authorization: `Bearer ${sessionObject.token}`,
         },
       });
 

@@ -1,6 +1,6 @@
 import topSet from "../../models/topSet.js";
 import session from "#src/v1/models/session.js";
-import { ValidationError } from "#src/infra/errors.js";
+import { UnauthorizedError, ValidationError } from "#src/infra/errors.js";
 
 async function postHandler(request, response, next) {
   try {
@@ -12,9 +12,14 @@ async function postHandler(request, response, next) {
         action: "Verifique os dados enviados e tente novamente",
       });
     }
-
-    const sessionToken = request.cookies.session_id;
-
+    const authHeader = request.headers.authorization;
+    if (!authHeader) {
+      throw new UnauthorizedError({
+        message: "Usuário não possui sessão válida.",
+        action: "Verifique se o usuário está logado e tente novamente.",
+      });
+    }
+    const sessionToken = authHeader.split(" ")[1];
     const sessionObject = await session.findOneValidByToken(sessionToken);
     const userId = sessionObject.user_id;
 
@@ -90,7 +95,14 @@ async function getHandler(request, response, next) {
       });
     }
 
-    const sessionToken = request.cookies.session_id;
+    const authHeader = request.headers.authorization;
+    if (!authHeader) {
+      throw new UnauthorizedError({
+        message: "Usuário não possui sessão válida.",
+        action: "Verifique se o usuário está logado e tente novamente.",
+      });
+    }
+    const sessionToken = authHeader.split(" ")[1];
 
     const sessionObject = await session.findOneValidByToken(sessionToken);
     const userId = sessionObject.user_id;

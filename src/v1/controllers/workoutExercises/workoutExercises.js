@@ -1,11 +1,18 @@
 import workoutExercise from "../../models/workoutExercise.js";
 import session from "#src/v1/models/session.js";
-import { ValidationError } from "#src/infra/errors.js";
+import { ValidationError, UnauthorizedError } from "#src/infra/errors.js";
 
 async function addExerciseToWorkoutHandler(request, response, next) {
   try {
     const { workoutId, exerciseId } = request.body;
-    const sessionToken = request.cookies.session_id;
+    const authHeader = request.headers.authorization;
+    if (!authHeader) {
+      throw new UnauthorizedError({
+        message: "Usuário não possui sessão válida.",
+        action: "Verifique se o usuário está logado e tente novamente.",
+      });
+    }
+    const sessionToken = authHeader.split(" ")[1];
 
     const sessionObject = await session.findOneValidByToken(sessionToken);
     const userId = sessionObject.user_id;
@@ -24,7 +31,14 @@ async function addExerciseToWorkoutHandler(request, response, next) {
 async function getAllWorkoutExercisesHandler(request, response, next) {
   try {
     const { workoutId } = request.params;
-    const sessionToken = request.cookies.session_id;
+    const authHeader = request.headers.authorization;
+    if (!authHeader) {
+      throw new UnauthorizedError({
+        message: "Usuário não possui sessão válida.",
+        action: "Verifique se o usuário está logado e tente novamente.",
+      });
+    }
+    const sessionToken = authHeader.split(" ")[1];
 
     const sessionObject = await session.findOneValidByToken(sessionToken);
     const userId = sessionObject.user_id;
@@ -40,7 +54,14 @@ async function deleteExerciseFromWorkoutHandler(request, response, next) {
   try {
     const { workoutExerciseId } = request.params;
 
-    const sessionToken = request.cookies.session_id;
+    const authHeader = request.headers.authorization;
+    if (!authHeader) {
+      throw new UnauthorizedError({
+        message: "Usuário não possui sessão válida.",
+        action: "Verifique se o usuário está logado e tente novamente.",
+      });
+    }
+    const sessionToken = authHeader.split(" ")[1];
 
     const sessionObject = await session.findOneValidByToken(sessionToken);
 
@@ -60,7 +81,14 @@ async function deleteExerciseFromWorkoutHandler(request, response, next) {
 async function reorderWorkoutExercisesHandler(request, response, next) {
   try {
     const { order } = request.body;
-    const sessionToken = request.cookies.session_id;
+    const authHeader = request.headers.authorization;
+    if (!authHeader) {
+      throw new UnauthorizedError({
+        message: "Usuário não possui sessão válida.",
+        action: "Verifique se o usuário está logado e tente novamente.",
+      });
+    }
+    const sessionToken = authHeader.split(" ")[1];
 
     const sessionObject = await session.findOneValidByToken(sessionToken);
     const userId = sessionObject.user_id;
