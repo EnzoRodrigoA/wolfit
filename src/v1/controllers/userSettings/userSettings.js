@@ -4,15 +4,7 @@ import userSetting from "#src/v1/models/userSetting.js";
 
 async function postHandler(request, response, next) {
   try {
-    const {
-      date_of_birth,
-      sex,
-      weight,
-      height,
-      experience_level,
-      frequency,
-      goal,
-    } = request.body;
+    const userSettingValues = request.body;
     const authHeader = request.headers.authorization;
     if (!authHeader) {
       throw new UnauthorizedError({
@@ -32,13 +24,7 @@ async function postHandler(request, response, next) {
     }
     const newUserSettings = await userSetting.insertUserSettings(
       userId,
-      date_of_birth,
-      sex,
-      weight,
-      height,
-      experience_level,
-      frequency,
-      goal,
+      userSettingValues,
     );
 
     return response.status(201).json(newUserSettings);
@@ -47,21 +33,68 @@ async function postHandler(request, response, next) {
   }
 }
 
-// async function patchHandler(request, response, next) {
-//   try {
-//     const { username } = request.params;
-//     const userInputValues = request.body;
+async function getHandler(request, response, next) {
+  try {
+    const authHeader = request.headers.authorization;
+    if (!authHeader) {
+      throw new UnauthorizedError({
+        message: "Usuário não possui sessão válida.",
+        action: "Verifique se o usuário está logado e tente novamente.",
+      });
+    }
+    const sessionToken = authHeader.split(" ")[1];
 
-//     const updatedUser = await user.update(username, userInputValues);
+    const sessionObject = await session.findOneValidByToken(sessionToken);
+    const userId = sessionObject.user_id;
+    if (!userId) {
+      throw new UnauthorizedError({
+        message: "Usuário não possui sessão válida.",
+        action: "Verifique se o usuário está logado e tente novamente.",
+      });
+    }
+    const userSettings = await userSetting.findSettingsByUserId(userId);
+    return response.status(200).json(userSettings);
+  } catch (error) {
+    next(error);
+  }
+}
 
-//     return response.status(200).json(updatedUser);
-//   } catch (error) {
-//     next(error);
-//   }
-// }
+async function patchHandler(request, response, next) {
+  try {
+    const userSettingValues = request.body;
+
+    const authHeader = request.headers.authorization;
+    if (!authHeader) {
+      throw new UnauthorizedError({
+        message: "Usuário não possui sessão válida.",
+        action: "Verifique se o usuário está logado e tente novamente.",
+      });
+    }
+    const sessionToken = authHeader.split(" ")[1];
+
+    const sessionObject = await session.findOneValidByToken(sessionToken);
+    const userId = sessionObject.user_id;
+    if (!userId) {
+      throw new UnauthorizedError({
+        message: "Usuário não possui sessão válida.",
+        action: "Verifique se o usuário está logado e tente novamente.",
+      });
+    }
+    const updatedUser = await userSetting.updateSettings(
+      userId,
+      userSettingValues,
+    );
+
+    return response.status(200).json(updatedUser);
+  } catch (error) {
+    next(error);
+  }
+}
 
 const users = {
   postHandler,
+  getHandler,
+  patchHandler,
 };
 
 export default users;
