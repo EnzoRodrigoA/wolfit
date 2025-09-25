@@ -26,7 +26,6 @@ describe("GET /api/v1/workouts", () => {
       expect(response.status).toBe(200);
 
       const responseBody = await response.json();
-      console.log(responseBody[0]);
 
       expect(uuidVersion(responseBody[0].id)).toBe(4);
       expect(Date.parse(responseBody[0].created_at)).not.toBeNaN();
@@ -36,6 +35,7 @@ describe("GET /api/v1/workouts", () => {
         id: createdWorkout.id,
         name: createdWorkout.name,
         user_id: sessionObject.user_id,
+        sequence_index: 1,
         is_rest: false,
         updated_at: createdWorkout.updated_at.toISOString(),
         created_at: createdWorkout.created_at.toISOString(),
