@@ -26,12 +26,13 @@ describe("GET /api/v1/workouts", () => {
       expect(response.status).toBe(200);
 
       const responseBody = await response.json();
+      console.log(responseBody[0]);
 
-      expect(uuidVersion(responseBody.id)).toBe(4);
-      expect(Date.parse(responseBody.created_at)).not.toBeNaN();
-      expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
+      expect(uuidVersion(responseBody[0].id)).toBe(4);
+      expect(Date.parse(responseBody[0].created_at)).not.toBeNaN();
+      expect(Date.parse(responseBody[0].updated_at)).not.toBeNaN();
 
-      expect(responseBody).toEqual({
+      expect(responseBody[0]).toEqual({
         id: createdWorkout.id,
         name: createdWorkout.name,
         user_id: sessionObject.user_id,

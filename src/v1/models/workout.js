@@ -135,7 +135,7 @@ async function findAllByUserId(userId) {
         action: "Verifique se o treino foi enviado corretamente.",
       });
     }
-    return results.rows[0];
+    return results.rows;
   }
 }
 
