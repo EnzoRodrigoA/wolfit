@@ -6,6 +6,7 @@ async function addTopSetToWorkoutExercise(
   userId,
   load,
   reps,
+  feeling,
 ) {
   if (!workoutExerciseId) {
     throw new NotFoundError({
@@ -19,21 +20,28 @@ async function addTopSetToWorkoutExercise(
     userId,
     load,
     reps,
+    feeling,
   );
 
   return newExerciseInWorkout;
 
-  async function runInsertQuery(workoutExerciseId, userId, load, reps) {
+  async function runInsertQuery(
+    workoutExerciseId,
+    userId,
+    load,
+    reps,
+    feeling,
+  ) {
     const results = await database.query({
       text: `
         INSERT INTO
-          top_sets (workout_exercise_id, user_id, load, reps)
+          top_sets (workout_exercise_id, user_id, load, reps, feeling)
         SELECT
-          $1, $2, $3, $4
+          $1, $2, $3, $4, $5
         RETURNING
           *
       ;`,
-      values: [workoutExerciseId, userId, load, reps],
+      values: [workoutExerciseId, userId, load, reps, feeling],
     });
     if (results.rowCount === 0) {
       throw new UnauthorizedError({

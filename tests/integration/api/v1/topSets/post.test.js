@@ -41,6 +41,7 @@ describe("POST /api/v1/top-set", () => {
           workoutExerciseId: addedWorkoutExercise.id,
           load: 50,
           reps: 10,
+          feeling: "very-light",
         }),
       });
 
@@ -55,6 +56,7 @@ describe("POST /api/v1/top-set", () => {
           workout_exercise_id: addedWorkoutExercise.id,
           load: "50",
           reps: 10,
+          feeling: "very-light",
           date: responseBody.newTopSet.date,
         },
       });
@@ -101,6 +103,7 @@ describe("POST /api/v1/top-set", () => {
           workoutExerciseId: addedWorkoutExercise.id,
           load: 47.5,
           reps: 10,
+          feeling: "heavy",
         }),
       });
 
@@ -115,6 +118,7 @@ describe("POST /api/v1/top-set", () => {
           workout_exercise_id: addedWorkoutExercise.id,
           load: "47.5",
           reps: 10,
+          feeling: "heavy",
           date: responseBody.newTopSet.date,
         },
       });
@@ -161,6 +165,7 @@ describe("POST /api/v1/top-set", () => {
           workoutExerciseId: addedWorkoutExercise.id,
           load: 45,
           reps: 10,
+          feeling: "insane",
         }),
       });
 
@@ -175,6 +180,7 @@ describe("POST /api/v1/top-set", () => {
           workout_exercise_id: addedWorkoutExercise.id,
           load: "45",
           reps: 10,
+          feeling: "insane",
           date: responseBody.newTopSet.date,
         },
       });
@@ -221,6 +227,7 @@ describe("POST /api/v1/top-set", () => {
           workoutExerciseId: addedWorkoutExercise.id,
           load: 47.5,
           reps: 8,
+          feeling: "peaceful",
         }),
       });
 
@@ -235,6 +242,7 @@ describe("POST /api/v1/top-set", () => {
           workout_exercise_id: addedWorkoutExercise.id,
           load: "47.5",
           reps: 8,
+          feeling: responseBody.newTopSet.feeling,
           date: responseBody.newTopSet.date,
         },
       });
