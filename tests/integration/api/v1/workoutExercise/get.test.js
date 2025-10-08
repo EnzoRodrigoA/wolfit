@@ -47,6 +47,7 @@ describe("GET /api/v1/workout-exercises", () => {
       expect(responseBody[0]).toEqual({
         id: responseBody[0].id,
         name: responseBody[0].name,
+        muscle: responseBody[0].muscle,
         workout_id: createdWorkout.id,
         exercise_id: exerciseData[0].id,
         exercise_sequence: 1,

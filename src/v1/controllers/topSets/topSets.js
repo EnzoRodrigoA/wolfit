@@ -4,7 +4,7 @@ import { UnauthorizedError, ValidationError } from "#src/infra/errors.js";
 
 async function postHandler(request, response, next) {
   try {
-    const { workoutExerciseId, load, reps } = request.body;
+    const { workoutExerciseId, load, reps, feeling } = request.body;
 
     if (!workoutExerciseId || !load || !reps) {
       throw new ValidationError({
@@ -33,6 +33,7 @@ async function postHandler(request, response, next) {
       userId,
       load,
       reps,
+      feeling,
     );
 
     function calculatePercentage() {

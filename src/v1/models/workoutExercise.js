@@ -60,7 +60,7 @@ async function findWorkoutExercisesByWorkoutId(workoutId, userId) {
     const results = await database.query({
       text: `
         SELECT 
-          we.*, e.exercise_name AS name
+          we.*, e.exercise_name AS name, e.target_muscle AS muscle
         FROM
           workout_exercise we
         JOIN

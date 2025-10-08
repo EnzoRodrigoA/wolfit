@@ -1,4 +1,12 @@
 export const up = (pgm) => {
+  pgm.createType("feeling_enum", [
+    "very-light",
+    "light",
+    "peaceful",
+    "heavy",
+    "insane",
+  ]);
+
   pgm.createTable("top_sets", {
     id: {
       type: "uuid",
@@ -24,6 +32,10 @@ export const up = (pgm) => {
     reps: {
       type: "integer",
       notNull: true,
+    },
+
+    feeling: {
+      type: "feeling_enum",
     },
 
     date: {

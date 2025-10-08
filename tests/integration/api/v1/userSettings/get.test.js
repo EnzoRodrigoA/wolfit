@@ -6,7 +6,7 @@ beforeAll(async () => {
   await orchestrator.runPendingMigrations();
 });
 
-describe("GET /api/v1/workout-exercises", () => {
+describe("GET /api/v1/user-settings", () => {
   describe("Default", () => {
     test("With existent workout", async () => {
       const createdUser = await orchestrator.createUser({});

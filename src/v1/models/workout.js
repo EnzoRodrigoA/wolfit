@@ -120,11 +120,15 @@ async function findAllByUserId(userId) {
     const results = await database.query({
       text: `
       SELECT 
-        *
+        w.*, wq.sequence_index 
       FROM
-        workouts
+        workouts w
+      JOIN
+        workout_queue wq ON w.id = wq.workout_id
       WHERE
-        user_id = $1
+        w.user_id = $1
+      ORDER BY
+        wq.sequence_index ASC
       ;`,
       values: [userId],
     });
@@ -135,7 +139,7 @@ async function findAllByUserId(userId) {
         action: "Verifique se o treino foi enviado corretamente.",
       });
     }
-    return results.rows[0];
+    return results.rows;
   }
 }
 
