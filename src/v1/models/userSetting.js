@@ -87,7 +87,6 @@ async function updateSettings(userId, userSettingValues) {
         newSettings.goal,
       ],
     });
-    console.log(results.rows[0]);
     return results.rows[0];
   }
 }

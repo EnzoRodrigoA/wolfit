@@ -134,6 +134,14 @@ async function createDefaultWorkout(userId, name) {
   return createdWorkout;
 }
 
+async function getExerciseByName(name) {
+  const response = await fetch(
+    `http://localhost:3030/api/v1/exercises?name=${encodeURIComponent(name)}`,
+  );
+  const data = await response.json();
+  return data[0];
+}
+
 async function completeWorkout(userId, workoutId) {
   return await workout.completeWorkout(userId, workoutId);
 }
@@ -155,7 +163,6 @@ async function deleteAllEmails() {
     await fetch(`${emailHttpUrl}/messages`, {
       method: "DELETE",
     });
-    console.log("Caixa de entrada limpa com sucesso!");
   } catch (error) {
     console.error("Erro ao limpar a caixa:", error);
   }
@@ -187,6 +194,7 @@ const orchestrator = {
   createSession,
   createWorkout,
   createDefaultWorkout,
+  getExerciseByName,
   completeWorkout,
   createRestDay,
   addWorkoutExercise,

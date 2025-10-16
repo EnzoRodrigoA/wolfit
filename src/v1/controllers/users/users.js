@@ -5,7 +5,9 @@ async function postHandler(request, response, next) {
   try {
     const userInputValues = request.body;
     const newUser = await user.create(userInputValues);
-    await activation.sendEmailToUser(newUser);
+
+    const activationToken = await activation.create(newUser.id);
+    await activation.sendEmailToUser(newUser, activationToken);
 
     return response.status(201).json(newUser);
   } catch (error) {
