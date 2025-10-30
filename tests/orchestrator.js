@@ -5,10 +5,6 @@ import database from "#src/infra/database.js";
 import migrator from "#src/v1/models/migrator.js";
 import user from "#src/v1/models/user.js";
 import session from "#src/v1/models/session.js";
-import workout from "#src/v1/models/workout.js";
-import exercise from "#src/v1/models/exercise.js";
-import topSet from "#src/v1/models/topSet.js";
-import workoutExercise from "#src/v1/models/workoutExercise.js";
 
 const emailHttpUrl = `http://${process.env.EMAIL_HTTP_HOST}:${process.env.EMAIL_HTTP_PORT}`;
 
@@ -67,97 +63,6 @@ async function createSession(userId) {
   return await session.create(userId);
 }
 
-async function createWorkout(userId, name) {
-  return await workout.createWorkout(userId, name || "Treino padrão");
-}
-
-async function createDefaultWorkout(userId, name) {
-  const createdWorkout = await workout.createWorkout(
-    userId,
-    name || "Treino Padrão",
-  );
-  const foundExercise = await exercise.findExercisesByParameters("Peito");
-
-  const workoutExercise1 = await workoutExercise.addExerciseToWorkout(
-    createdWorkout.id,
-    foundExercise[0].id,
-    userId,
-  );
-  await workoutExercise.addExerciseToWorkout(
-    createdWorkout.id,
-    foundExercise[1].id,
-    userId,
-  );
-  await workoutExercise.addExerciseToWorkout(
-    createdWorkout.id,
-    foundExercise[2].id,
-    userId,
-  );
-  await workoutExercise.addExerciseToWorkout(
-    createdWorkout.id,
-    foundExercise[3].id,
-    userId,
-  );
-
-  const topSetMockParams = [
-    { load: 30, reps: 8 },
-    { load: 42, reps: 12 },
-    { load: 12, reps: 10 },
-    { load: 22, reps: 8 },
-  ];
-
-  await topSet.addTopSetToWorkoutExercise(
-    workoutExercise1.id,
-    userId,
-    topSetMockParams[0].load,
-    topSetMockParams[0].reps,
-  );
-  await topSet.addTopSetToWorkoutExercise(
-    workoutExercise1.id,
-    userId,
-    topSetMockParams[1].load,
-    topSetMockParams[1].reps,
-  );
-  await topSet.addTopSetToWorkoutExercise(
-    workoutExercise1.id,
-    userId,
-    topSetMockParams[2].load,
-    topSetMockParams[2].reps,
-  );
-  await topSet.addTopSetToWorkoutExercise(
-    workoutExercise1.id,
-    userId,
-    topSetMockParams[3].load,
-    topSetMockParams[3].reps,
-  );
-
-  return createdWorkout;
-}
-
-async function getExerciseByName(name) {
-  const response = await fetch(
-    `http://localhost:3030/api/v1/exercises?name=${encodeURIComponent(name)}`,
-  );
-  const data = await response.json();
-  return data[0];
-}
-
-async function completeWorkout(userId, workoutId) {
-  return await workout.completeWorkout(userId, workoutId);
-}
-
-async function createRestDay(userId) {
-  return await workout.createRestDay(userId);
-}
-
-async function addWorkoutExercise(workoutId, exerciseId, userId) {
-  return await workoutExercise.addExerciseToWorkout(
-    workoutId,
-    exerciseId,
-    userId,
-  );
-}
-
 async function deleteAllEmails() {
   try {
     await fetch(`${emailHttpUrl}/messages`, {
@@ -192,12 +97,6 @@ const orchestrator = {
   runPendingMigrations,
   createUser,
   createSession,
-  createWorkout,
-  createDefaultWorkout,
-  getExerciseByName,
-  completeWorkout,
-  createRestDay,
-  addWorkoutExercise,
   deleteAllEmails,
   getLastEmail,
 };

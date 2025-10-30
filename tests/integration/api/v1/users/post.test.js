@@ -33,7 +33,6 @@ describe("POST /api/v1/users", () => {
         username: "EnzoPasquale",
         email: "enzo@email.com",
         password: responseBody.password,
-        plan_type: "free",
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,
       });
