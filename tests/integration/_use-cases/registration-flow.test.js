@@ -5,7 +5,7 @@ beforeAll(async () => {
   await orchestrator.clearDatabase();
   await orchestrator.runPendingMigrations();
   await orchestrator.deleteAllEmails();
-})
+});
 
 describe("Use case: Registration Flow (all successful)", () => {
   test("Create user account", async () => {
@@ -19,9 +19,10 @@ describe("Use case: Registration Flow (all successful)", () => {
         body: JSON.stringify({
           username: "RegistrationFlow",
           email: "registration.flow@curso.dev",
-          password: "senha123"
-        })
-      })
+          password: "senha123",
+        }),
+      },
+    );
 
     expect(createUserResponse.status).toBe(201);
 
@@ -31,10 +32,18 @@ describe("Use case: Registration Flow (all successful)", () => {
       id: createUserResponseBody.id,
       username: "RegistrationFlow",
       email: "registration.flow@curso.dev",
-      features: [],
+      features: ["read:activation_token"],
       password: createUserResponseBody.password,
       created_at: createUserResponseBody.created_at,
       updated_at: createUserResponseBody.updated_at,
-    })
-  })
-})
+    });
+  });
+
+  test("Receive activation email", async () => {});
+
+  test("Activate account", async () => {});
+
+  test("Login", async () => {});
+
+  test("Get user information", async () => {});
+});
