@@ -1,11 +1,10 @@
 import { Router } from "express";
 import { MethodNotAllowedError } from "#src/infra/errors.js";
-
-import userSession from "#controllers/user.js";
+import activations from "#controllers/activations.controller.js";
 
 const router = Router();
 
-router.get("/", userSession.getHandler);
+router.patch("/:token_id", activations.patchHandler);
 
 router.use("/", (request, response, next) => {
   const error = new MethodNotAllowedError();

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { MethodNotAllowedError } from "#src/infra/errors.js";
 
-import sessions from "#controllers/sessions.js";
+import sessions from "#controllers/sessions.controller.js";
 
 const router = Router();
 

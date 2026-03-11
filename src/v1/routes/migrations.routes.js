@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import migrations from "#controllers/migrations.js";
+import migrations from "#controllers/migrations.controller.js";
 import { MethodNotAllowedError } from "#src/infra/errors.js";
 
 const router = Router();
