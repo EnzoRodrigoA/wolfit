@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { MethodNotAllowedError } from "#src/infra/errors.js";
 
-import users from "../controllers/users/users.js";
+import users from "#controllers/users.js";
 
 const router = Router();
 

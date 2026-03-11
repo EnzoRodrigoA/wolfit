@@ -5,12 +5,16 @@
   "main": "src/server.js",
   "type": "module",
   "imports": {
-    "#src/*": "./src/*"
+    "#src/*": "./src/*",
+    "#infra/*": "./src/infra/*",
+    "#controllers/*": "./src/v1/controllers/*",
+    "#models/*": "./src/v1/models/*",
+    "#routes/*": "./src/v1/routes/*"
   },
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "trap \"npm run services:stop\" INT EXIT; npm run services:up && npm run services:wait:database && npm run migrations:up && nodemon src/server.js",
-    "test": "npm run services:up && concurrently -n node,jest --hide node -k -s command-jest \"node src/server.js\" \"node --experimental-vm-modules node_modules/.bin/jest --runInBand --verbose\"",
+    "start": "cross-env NODE_ENV=production node src/server.js",
+    "dev": "trap \"npm run services:stop\" INT EXIT; npm run services:up && npm run services:wait:database && npm run migrations:up && cross-env NODE_ENV=development nodemon src/server.js",
+    "test": "npm run services:up && concurrently -n node,jest --hide node -k -s command-jest \"cross-env NODE_ENV=test node src/server.js\" \"node --experimental-vm-modules node_modules/.bin/jest --runInBand --verbose\"",
     "posttest": "npm run services:stop",
     "test:watch": "node --experimental-vm-modules node_modules/.bin/jest --watchAll --runInBand --verbose",
     "services:up": "docker compose -f src/infra/compose.yaml up -d",
@@ -47,6 +51,7 @@
     "@faker-js/faker": "10.0.0",
     "commitizen": "4.3.1",
     "concurrently": "9.2.1",
+    "cross-env": "^10.1.0",
     "cz-conventional-changelog": "^3.3.0",
     "dotenv-cli": "10.0.0",
     "eslint": "9.37.0",

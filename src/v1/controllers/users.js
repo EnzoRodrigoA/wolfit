@@ -1,9 +1,13 @@
-import user from "../../models/user.js";
+import user from "#models/user.js";
+import activation from "#models/activation.js";
 
 async function postHandler(request, response, next) {
   try {
     const userInputValues = request.body;
     const newUser = await user.create(userInputValues);
+
+    const activationToken = await activation.create(newUser.id);
+    await activation.sendEmailToUser(newUser, activationToken);
 
     return response.status(201).json(newUser);
   } catch (error) {
