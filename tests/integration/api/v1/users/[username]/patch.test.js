@@ -1,7 +1,7 @@
-import orchestrator from "../../../../../orchestrator.js";
-import { version as uuidVersion } from "uuid";
-import user from "#src/v1/models/user.js";
 import password from "#src/v1/models/password.js";
+import user from "#src/v1/models/user.js";
+import { version as uuidVersion } from "uuid";
+import orchestrator from "../../../../../orchestrator.js";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -121,6 +121,7 @@ describe("PATCH /api/v1/users/[username]", () => {
         id: responseBody.id,
         username: "uniqueUser2",
         email: createdUser.email,
+        features: [],
         password: responseBody.password,
 
         created_at: responseBody.created_at,
@@ -160,6 +161,7 @@ describe("PATCH /api/v1/users/[username]", () => {
         id: responseBody.id,
         username: createdUser.username,
         email: "unique.email2@email.com",
+        features: [],
         password: responseBody.password,
 
         created_at: responseBody.created_at,
@@ -199,6 +201,7 @@ describe("PATCH /api/v1/users/[username]", () => {
         id: responseBody.id,
         username: createdUser.username,
         email: createdUser.email,
+        features: [],
         password: responseBody.password,
 
         created_at: responseBody.created_at,

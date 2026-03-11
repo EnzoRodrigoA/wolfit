@@ -1,10 +1,10 @@
-import retry from "async-retry";
 import { faker } from "@faker-js/faker";
+import retry from "async-retry";
 
 import database from "#src/infra/database.js";
 import migrator from "#src/v1/models/migrator.js";
-import user from "#src/v1/models/user.js";
 import session from "#src/v1/models/session.js";
+import user from "#src/v1/models/user.js";
 
 const emailHttpUrl = `http://${process.env.EMAIL_HTTP_HOST}:${process.env.EMAIL_HTTP_PORT}`;
 

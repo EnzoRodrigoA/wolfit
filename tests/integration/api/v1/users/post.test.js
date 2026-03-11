@@ -1,7 +1,7 @@
-import orchestrator from "../../../../orchestrator.js";
-import { version as uuidVersion } from "uuid";
-import user from "#src/v1/models/user.js";
 import password from "#src/v1/models/password.js";
+import user from "#src/v1/models/user.js";
+import { version as uuidVersion } from "uuid";
+import orchestrator from "../../../../orchestrator.js";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -32,6 +32,7 @@ describe("POST /api/v1/users", () => {
         id: responseBody.id,
         username: "EnzoPasquale",
         email: "enzo@email.com",
+        features: [],
         password: responseBody.password,
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,

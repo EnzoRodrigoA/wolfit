@@ -1,8 +1,8 @@
-import { version as uuidVersion } from "uuid";
 import { jest } from "@jest/globals";
+import { version as uuidVersion } from "uuid";
 
-import orchestrator from "../../../../orchestrator.js";
 import session from "#src/v1/models/session.js";
+import orchestrator from "../../../../orchestrator.js";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -33,6 +33,7 @@ describe("GET /api/v1/user", () => {
         id: createdUser.id,
         username: "UserWithValidSession",
         email: createdUser.email,
+        features: [],
         password: createdUser.password,
 
         created_at: createdUser.created_at.toISOString(),
