@@ -1,7 +1,9 @@
 import controller from "#src/infra/controller.js";
 import {
+  ForbiddenError,
   InternalServerError,
   NotFoundError,
+  ServiceError,
   UnauthorizedError,
   ValidationError,
 } from "#src/infra/errors.js";
@@ -20,15 +22,24 @@ export default function globalErrorCatcher(error, request, response, next) {
     if (statusCode >= 500) {
       console.error(error);
     } else {
-      console.info("\n", statusCode, `- ${error.name} - ${error.action}`);
+      console.info(
+        "\n==============================================================\n",
+        statusCode,
+        `- ${error.name} -\n${error.message}\n${error.action}`,
+      );
     }
   }
   if (error instanceof UnauthorizedError) {
     controller.clearSessionCookie(response);
     return response.status(statusCode).json(publicErrorObject);
   }
-  if (error instanceof ValidationError || error instanceof NotFoundError) {
+  if (
+    error instanceof ValidationError ||
+    error instanceof NotFoundError ||
+    error instanceof ForbiddenError ||
+    error instanceof ServiceError
+  ) {
     return response.status(error.statusCode).json(error);
   }
-  response.status(statusCode).json(publicErrorObject);
+  return response.status(statusCode).json(publicErrorObject);
 }

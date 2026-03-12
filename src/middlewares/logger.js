@@ -20,11 +20,13 @@ function logger(req, res, next) {
     console.log(`${method} ${url} ${statusColor(statusCode)} in ${duration}ms`);
 
     if (statusCode >= 400) {
-      console.log("");
+      return console.log(
+        "==============================================================\n",
+      );
     }
   });
 
-  next();
+  return next();
 }
 
 export default logger;
