@@ -10,7 +10,7 @@ router.delete("/", sessions.deleteHandler);
 
 router.use("/", (request, response, next) => {
   const error = new MethodNotAllowedError();
-  next(error);
+  return next(error);
 });
 
 export default router;

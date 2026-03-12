@@ -1,8 +1,9 @@
 import { version as uuidVersion } from "uuid";
 import { jest } from "@jest/globals";
+import setCookieParser from "set-cookie-parser";
 
-import orchestrator from "../../../../orchestrator.js";
-import session from "#src/v1/models/session.js";
+import orchestrator from "#tests/orchestrator.js";
+import session from "#models/session.js";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -19,7 +20,7 @@ describe("DELETE /api/v1/sessions", () => {
       const response = await fetch("http://localhost:3030/api/v1/sessions", {
         method: "DELETE",
         headers: {
-          Authorization: `Bearer ${nonexistentToken}`,
+          cookie: `session_id=${nonexistentToken}`,
         },
       });
 
@@ -51,7 +52,7 @@ describe("DELETE /api/v1/sessions", () => {
       const response = await fetch("http://localhost:3030/api/v1/sessions", {
         method: "DELETE",
         headers: {
-          Cookie: `session_id=${sessionObject.token}`,
+          cookie: `session_id=${sessionObject.token}`,
         },
       });
 
@@ -75,7 +76,7 @@ describe("DELETE /api/v1/sessions", () => {
       const response = await fetch("http://localhost:3030/api/v1/sessions", {
         method: "DELETE",
         headers: {
-          Authorization: `Bearer ${sessionObject.token}`,
+          cookie: `session_id=${sessionObject.token}`,
         },
       });
 
@@ -104,12 +105,23 @@ describe("DELETE /api/v1/sessions", () => {
         responseBody.updated_at > sessionObject.updated_at.toISOString(),
       ).toBe(true);
 
-      //Doble check assertions
+      const parsedSetCookie = setCookieParser(response, {
+        map: true,
+      });
+
+      expect(parsedSetCookie.session_id).toEqual({
+        name: "session_id",
+        value: "invalid",
+        maxAge: -1,
+        path: "/",
+        httpOnly: true,
+      });
+
       const doubleCheckResponse = await fetch(
         "http://localhost:3030/api/v1/user",
         {
           headers: {
-            Authorization: `Bearer ${sessionObject.token}`,
+            cookie: `session_id=${sessionObject.token}`,
           },
         },
       );

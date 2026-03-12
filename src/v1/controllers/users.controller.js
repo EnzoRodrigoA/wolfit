@@ -1,7 +1,7 @@
 import user from "#models/user.js";
-import session from "#src/v1/models/session.js";
+import session from "#models/session.js";
 import activation from "#models/activation.js";
-import { UnauthorizedError } from "#src/infra/errors.js";
+import controller from "#infra/controller.js";
 
 async function postHandler(request, response, next) {
   try {
@@ -42,19 +42,19 @@ async function getOneByUsername(request, response, next) {
 
 async function getHandler(request, response, next) {
   try {
-    const authHeader = request.headers.authorization;
-    if (!authHeader) {
-      throw new UnauthorizedError({
-        message: "Usuário não possui sessão válida.",
-        action: "Verifique se o usuário está logado e tente novamente.",
-      });
-    }
-    const sessionToken = authHeader.split(" ")[1];
+    const sessionToken = request.cookies.session_id;
 
     const sessionObject = await session.findOneValidByToken(sessionToken);
-    await session.renew(sessionObject.id);
+    const renewedSessionObject = await session.renew(sessionObject.id);
+
+    controller.setSessionCookie(renewedSessionObject.token, response);
 
     const userFound = await user.findOneById(sessionObject.user_id);
+
+    response.setHeader(
+      "Cache-Control",
+      "no-store, no-cache, max-age=0, must-revalidate",
+    );
 
     return response.status(200).json(userFound);
   } catch (error) {

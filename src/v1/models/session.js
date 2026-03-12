@@ -67,7 +67,8 @@ async function findOneValidByToken(sessionToken) {
         sessions
       WHERE
         token = $1
-      AND expires_at > NOW()
+      AND
+        expires_at > NOW()
       LIMIT
         1
     ;`,
