@@ -19,7 +19,7 @@ function logger(req, res, next) {
 
     console.log(`${method} ${url} ${statusColor(statusCode)} in ${duration}ms`);
 
-    if (statusCode >= 400) {
+    if (statusCode >= 400 && process.env.NODE_ENV !== "production") {
       return console.log(
         "==============================================================\n",
       );
