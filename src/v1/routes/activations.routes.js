@@ -4,7 +4,7 @@ import activations from "#controllers/activations.controller.js";
 import controller from "#src/infra/controller.js";
 
 const router = Router();
-router.use("/", controller.injectAnonymousOrUser);
+router.use(controller.injectAnonymousOrUser);
 router.patch(
   "/:token_id",
   controller.canRequest("read:activation_token"),
