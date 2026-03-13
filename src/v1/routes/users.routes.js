@@ -8,7 +8,11 @@ const router = Router();
 
 router.use(controller.injectAnonymousOrUser);
 router.post("/", controller.canRequest("create:user"), users.postHandler);
-router.patch("/:username", users.patchHandler);
+router.patch(
+  "/:username",
+  controller.canRequest("update:user"),
+  users.patchHandler,
+);
 router.get("/:username", users.getOneByUsername);
 
 router.use("/", (request, response, next) => {
