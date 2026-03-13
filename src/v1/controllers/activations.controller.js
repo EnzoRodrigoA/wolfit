@@ -9,7 +9,7 @@ async function patchHandler(request, response, next) {
     const usedActivationToken =
       await activation.markTokenAsUsed(activationTokenId);
 
-    await activation.activateUserById(validActivationToken.user_id);
+    await activation.activateUserByUserId(validActivationToken.user_id);
 
     return response.status(200).json(usedActivationToken);
   } catch (error) {

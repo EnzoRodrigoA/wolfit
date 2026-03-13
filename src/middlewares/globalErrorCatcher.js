@@ -3,7 +3,6 @@ import {
   ForbiddenError,
   InternalServerError,
   NotFoundError,
-  ServiceError,
   UnauthorizedError,
   ValidationError,
 } from "#src/infra/errors.js";
@@ -36,8 +35,7 @@ export default function globalErrorCatcher(error, request, response, next) {
   if (
     error instanceof ValidationError ||
     error instanceof NotFoundError ||
-    error instanceof ForbiddenError ||
-    error instanceof ServiceError
+    error instanceof ForbiddenError
   ) {
     return response.status(error.statusCode).json(error);
   }

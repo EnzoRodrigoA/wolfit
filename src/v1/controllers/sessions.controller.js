@@ -1,6 +1,8 @@
 import authentication from "#src/v1/models/authentication.js";
 import session from "#src/v1/models/session.js";
 import controller from "#infra/controller.js";
+import authorization from "../models/authorization.js";
+import { ForbiddenError } from "#src/infra/errors.js";
 
 async function postHandler(request, response, next) {
   try {
@@ -11,6 +13,12 @@ async function postHandler(request, response, next) {
       userInputValues.password,
     );
 
+    if (!authorization.can(authenticatedUser, "create:session")) {
+      throw new ForbiddenError({
+        message: "Você não possui permissão para fazer login.",
+        action: "Contate o suporte caso você acredite que isso seja um erro.",
+      });
+    }
     const newSession = await session.create(authenticatedUser.id);
 
     controller.setSessionCookie(newSession.token, response);

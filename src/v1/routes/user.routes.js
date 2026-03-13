@@ -2,10 +2,12 @@ import { Router } from "express";
 import { MethodNotAllowedError } from "#src/infra/errors.js";
 
 import users from "#controllers/users.controller.js";
+import controller from "#infra/controller.js";
 
 const router = Router();
 
-router.get("/", users.getHandler);
+router.use("/", controller.injectAnonymousOrUser);
+router.get("/", controller.canRequest("read:session"), users.getHandler);
 
 router.use("/", (request, response, next) => {
   const error = new MethodNotAllowedError();
