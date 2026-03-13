@@ -99,8 +99,11 @@ async function markTokenAsUsed(activationTokenId) {
   }
 }
 
-async function activateUserById(userId) {
-  const activatedUser = await user.setFeatures(userId, ["create:session"]);
+async function activateUserByUserId(userId) {
+  const activatedUser = await user.setFeatures(userId, [
+    "create:session",
+    "read:session",
+  ]);
   return activatedUser;
 }
 
@@ -108,7 +111,7 @@ const activation = {
   sendEmailToUser,
   findOneValidById,
   markTokenAsUsed,
-  activateUserById,
+  activateUserByUserId,
   create,
 };
 
