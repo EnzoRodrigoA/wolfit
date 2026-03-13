@@ -44,7 +44,7 @@ describe("PATCH /api/v1/users/[username]", () => {
 
   describe("Default user", () => {
     test("With nonexistent 'username'", async () => {
-      const createdUser = await orchestrator.createUser({});
+      const createdUser = await orchestrator.createUser();
       const activatedUser = await orchestrator.activateUser(createdUser.id);
       const sessionObject = await orchestrator.createSession(activatedUser.id);
 
