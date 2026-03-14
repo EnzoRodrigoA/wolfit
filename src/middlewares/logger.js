@@ -17,13 +17,11 @@ function logger(req, res, next) {
     else if (statusCode >= 200) statusColor = chalk.green;
     else statusColor = chalk.white;
 
-    console.log(`${method} ${url} ${statusColor(statusCode)} in ${duration}ms`);
-
-    if (statusCode >= 400 && process.env.NODE_ENV !== "production") {
-      return console.log(
-        "==============================================================\n",
-      );
-    }
+    process.env.NODE_ENV === "development"
+      ? console.log(
+          `${method} ${url} ${statusColor(statusCode)} in ${duration}ms\n`,
+        )
+      : null;
   });
 
   return next();

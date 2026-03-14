@@ -1,4 +1,5 @@
 import controller from "#src/infra/controller.js";
+import chalk from "chalk";
 import {
   ForbiddenError,
   InternalServerError,
@@ -18,20 +19,17 @@ export default function globalErrorCatcher(error, request, response, next) {
         })
       : error;
   if (process.env.NODE_ENV !== "production") {
-    if (statusCode >= 500) {
-      console.error(error);
-    } else {
-      console.info(
-        "\n==============================================================\n",
-        statusCode,
-        `- ${error.name} -\n${error.message}\n${error.action}`,
-      );
-    }
+    statusCode >= 500
+      ? console.error(
+          statusCode,
+          `- ${chalk.bgRed(error.name)} -\n${chalk.redBright(error.cause)}\n${error.stack}`,
+        )
+      : console.info(
+          statusCode,
+          `- ${chalk.bgYellow(error.name)} -\n${error.message}\n${chalk.yellow(error.action)}`,
+        );
   }
-  if (error instanceof UnauthorizedError) {
-    controller.clearSessionCookie(response);
-    return response.status(statusCode).json(publicErrorObject);
-  }
+
   if (
     error instanceof ValidationError ||
     error instanceof NotFoundError ||
@@ -39,5 +37,8 @@ export default function globalErrorCatcher(error, request, response, next) {
   ) {
     return response.status(error.statusCode).json(error);
   }
+  error instanceof UnauthorizedError
+    ? controller.clearSessionCookie(response)
+    : null;
   return response.status(statusCode).json(publicErrorObject);
 }
