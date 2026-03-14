@@ -3,10 +3,9 @@ export const up = (pgm) => {
     features: {
       type: "varchar[]",
       notNull: true,
-      default: "{}"
-    }
-  })
+      default: "{}",
+    },
+  });
 };
-
 
 export const down = false;
