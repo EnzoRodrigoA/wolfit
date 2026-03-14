@@ -1,7 +1,9 @@
 import database from "#src/infra/database.js";
+import authorization from "#models/authorization.js";
 
 export default async function status(request, response, next) {
   try {
+    const userTryingToGet = request.context.user;
     const updatedAt = new Date().toISOString();
 
     const databaseVersionResult = await database.query("SHOW server_version;");
@@ -29,7 +31,7 @@ export default async function status(request, response, next) {
     const databaseOpenedConnectionsValue =
       databaseOpenedConnectionsResult.rows[0].count;
 
-    response.status(200).json({
+    const statusObject = {
       updated_at: updatedAt,
       dependencies: {
         database: {
@@ -38,7 +40,15 @@ export default async function status(request, response, next) {
           opened_connections: databaseOpenedConnectionsValue,
         },
       },
-    });
+    };
+
+    const secureOutputValues = authorization.filterOutput(
+      userTryingToGet,
+      "read:status",
+      statusObject,
+    );
+
+    response.status(200).json(secureOutputValues);
   } catch (error) {
     next(error);
   }

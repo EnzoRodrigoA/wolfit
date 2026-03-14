@@ -7,13 +7,20 @@ import { ForbiddenError } from "#src/infra/errors.js";
 
 async function postHandler(request, response, next) {
   try {
+    const userTryingToPost = request.context.user;
     const userInputValues = request.body;
     const newUser = await user.create(userInputValues);
 
     const activationToken = await activation.create(newUser.id);
     await activation.sendEmailToUser(newUser, activationToken);
 
-    return response.status(201).json(newUser);
+    const secureOutputValues = authorization.filterOutput(
+      userTryingToPost,
+      "read:user",
+      newUser,
+    );
+
+    return response.status(201).json(secureOutputValues);
   } catch (error) {
     next(error);
   }
@@ -37,7 +44,13 @@ async function patchHandler(request, response, next) {
 
     const updatedUser = await user.update(username, userInputValues);
 
-    return response.status(200).json(updatedUser);
+    const secureOutputValues = authorization.filterOutput(
+      userTryingToPatch,
+      "read:user",
+      updatedUser,
+    );
+
+    return response.status(200).json(secureOutputValues);
   } catch (error) {
     next(error);
   }
@@ -45,9 +58,17 @@ async function patchHandler(request, response, next) {
 
 async function getOneByUsername(request, response, next) {
   try {
+    const userTryingToGet = request.context.user;
     const { username } = request.params;
     const userFound = await user.findOneByUsername(username);
-    return response.status(200).json(userFound);
+
+    const secureOutputValues = authorization.filterOutput(
+      userTryingToGet,
+      "read:user",
+      userFound,
+    );
+
+    return response.status(200).json(secureOutputValues);
   } catch (error) {
     next(error);
   }
@@ -55,6 +76,7 @@ async function getOneByUsername(request, response, next) {
 
 async function getHandler(request, response, next) {
   try {
+    const userTryingToGet = request.context.user;
     const sessionToken = request.cookies.session_id;
 
     const sessionObject = await session.findOneValidByToken(sessionToken);
@@ -69,7 +91,13 @@ async function getHandler(request, response, next) {
       "no-store, no-cache, max-age=0, must-revalidate",
     );
 
-    return response.status(200).json(userFound);
+    const secureOutputValues = authorization.filterOutput(
+      userTryingToGet,
+      "read:user:self",
+      userFound,
+    );
+
+    return response.status(200).json(secureOutputValues);
   } catch (error) {
     next(error);
   }

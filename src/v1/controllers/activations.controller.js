@@ -1,7 +1,9 @@
 import activation from "#models/activation.js";
+import authorization from "../models/authorization.js";
 
 async function patchHandler(request, response, next) {
   try {
+    const userTryingToPatch = request.context.user;
     const activationTokenId = request.params.token_id;
 
     const validActivationToken =
@@ -12,7 +14,13 @@ async function patchHandler(request, response, next) {
     const usedActivationToken =
       await activation.markTokenAsUsed(activationTokenId);
 
-    return response.status(200).json(usedActivationToken);
+    const secureOutputValues = authorization.filterOutput(
+      userTryingToPatch,
+      "read:activation_token",
+      usedActivationToken,
+    );
+
+    return response.status(200).json(secureOutputValues);
   } catch (error) {
     next(error);
   }
