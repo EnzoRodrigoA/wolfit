@@ -58,7 +58,10 @@ describe("POST /api/v1/migrations", () => {
     test("With `read:migration`", async () => {
       const createdUser = await orchestrator.createUser();
       const activatedUser = await orchestrator.activateUser(createdUser.id);
-      await orchestrator.addFeaturesToUser(createdUser, ["create:migration"]);
+      await orchestrator.addFeaturesToUser(createdUser, [
+        "create:migration",
+        "read:migration",
+      ]);
       const sessionObject = await orchestrator.createSession(activatedUser.id);
 
       const response = await fetch("http://localhost:3030/api/v1/migrations", {

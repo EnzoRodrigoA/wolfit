@@ -24,7 +24,7 @@ async function postHandler(request, response, next) {
 
     const secureOutputValues = authorization.filterOutput(
       userTryingToPost,
-      "read:migrations",
+      "read:migration",
       migratedMigrations,
     );
 
