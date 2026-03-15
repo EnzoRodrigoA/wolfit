@@ -1,13 +1,13 @@
 import chalk from "chalk";
 
-function logger(req, res, next) {
+function logger(request, response, next) {
   const start = Date.now();
 
-  res.on("finish", () => {
+  response.on("finish", () => {
     const duration = Date.now() - start;
-    const method = req.method;
-    const url = req.originalUrl;
-    const { statusCode } = res;
+    const method = request.method;
+    const url = request.originalUrl;
+    const { statusCode } = response;
 
     let statusColor;
 
@@ -17,14 +17,12 @@ function logger(req, res, next) {
     else if (statusCode >= 200) statusColor = chalk.green;
     else statusColor = chalk.white;
 
-    console.log(`${method} ${url} ${statusColor(statusCode)} in ${duration}ms`);
-
-    if (statusCode >= 400) {
-      console.log("");
-    }
+    console.log(
+      `${method} ${url} ${statusColor(statusCode)} in ${duration}ms\n`,
+    );
   });
 
-  next();
+  return next();
 }
 
 export default logger;

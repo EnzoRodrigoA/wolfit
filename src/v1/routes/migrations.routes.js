@@ -1,12 +1,18 @@
 import { Router } from "express";
 
-import migrations from "../controllers/migrations/migrations.js";
+import migrations from "#controllers/migrations.controller.js";
 import { MethodNotAllowedError } from "#src/infra/errors.js";
+import controller from "#infra/controller.js";
 
 const router = Router();
 
-router.get("/", migrations.getHandler);
-router.post("/", migrations.postHandler);
+router.use(controller.injectAnonymousOrUser);
+router.get("/", controller.canRequest("read:migration"), migrations.getHandler);
+router.post(
+  "/",
+  controller.canRequest("create:migration"),
+  migrations.postHandler,
+);
 
 router.use("/", (request, response, next) => {
   const error = new MethodNotAllowedError();

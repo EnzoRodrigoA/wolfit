@@ -1,7 +1,7 @@
 import { version as uuidVersion } from "uuid";
-
-import orchestrator from "../../../../orchestrator.js";
-import session from "#src/v1/models/session.js";
+import setCookieParser from "set-cookie-parser";
+import orchestrator from "#tests/orchestrator.js";
+import session from "#models/session.js";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -68,7 +68,7 @@ describe("POST /api/v1/sessions", () => {
     });
 
     test("With incorrect 'email' and incorrect 'password'", async () => {
-      await orchestrator.createUser({});
+      await orchestrator.createUser();
 
       const response = await fetch("http://localhost:3030/api/v1/sessions", {
         method: "POST",
@@ -98,6 +98,8 @@ describe("POST /api/v1/sessions", () => {
         email: "emailcerto@email.com",
         password: "senhacerta",
       });
+
+      await orchestrator.activateUser(createdUser.id);
 
       const response = await fetch("http://localhost:3030/api/v1/sessions", {
         method: "POST",
@@ -135,6 +137,18 @@ describe("POST /api/v1/sessions", () => {
       createdAt.setMilliseconds(0);
 
       expect(expiresAt - createdAt).toBe(session.EXPIRATION_IN_MILLISECONDS);
+
+      const parsedSetCookie = setCookieParser(response, {
+        map: true,
+      });
+
+      expect(parsedSetCookie.session_id).toEqual({
+        name: "session_id",
+        value: responseBody.token,
+        maxAge: session.EXPIRATION_IN_MILLISECONDS / 1000,
+        path: "/",
+        httpOnly: true,
+      });
     });
   });
 });

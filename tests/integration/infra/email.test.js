@@ -1,5 +1,5 @@
-import email from "#src/infra/email.js";
-import orchestrator from "../../orchestrator";
+import email from "#infra/email.js";
+import orchestrator from "#tests/orchestrator.js";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -22,7 +22,6 @@ describe("infra/email.js", () => {
     });
 
     const lastEmail = await orchestrator.getLastEmail();
-    console.log(lastEmail);
     expect(lastEmail.sender).toBe("<contato@wolfit.com.br>");
     expect(lastEmail.recipients[0]).toBe("<enzo@email.com>");
     expect(lastEmail.subject).toBe("Ultimo email enviado");
