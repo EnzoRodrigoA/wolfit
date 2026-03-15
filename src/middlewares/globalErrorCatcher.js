@@ -18,32 +18,19 @@ export default function globalErrorCatcher(error, request, response, next) {
           statusCode: statusCode,
         })
       : error;
-
   if (process.env.NODE_ENV === "production") {
-    const logData = {
-      errorName: error.name,
-      message: error.message,
-      action: error.action,
-      stack: statusCode >= 500 ? error.stack : undefined,
-    };
-
-    if (statusCode >= 500) {
-      console.error(JSON.stringify(logData));
-    } else {
-      console.info(JSON.stringify(logData));
-    }
+    const logMessage = `${statusCode} - ${error.name} - ${error.message}\nAction: ${error.action}\n${error.stack}`;
+    statusCode >= 500 ? console.error(logMessage) : console.info(logMessage);
   } else {
-    if (statusCode >= 500) {
-      console.error(
-        statusCode,
-        `- ${chalk.bgRed(error.name)} -\n${chalk.redBright(error.cause)}\n${error.stack}`,
-      );
-    } else {
-      console.info(
-        statusCode,
-        `- ${chalk.bgYellow(error.name)} -\n${error.message}\n${chalk.yellow(error.action)}`,
-      );
-    }
+    statusCode >= 500
+      ? console.error(
+          statusCode,
+          `- ${chalk.bgRed(error.name)} -\n${chalk.redBright(error.cause)}\n${error.stack}`,
+        )
+      : console.info(
+          statusCode,
+          `- ${chalk.bgYellow(error.name)} -\n${error.message}\n${chalk.yellow(error.action)}`,
+        );
   }
 
   if (
@@ -53,8 +40,9 @@ export default function globalErrorCatcher(error, request, response, next) {
   ) {
     return response.status(error.statusCode).json(error);
   }
-  error instanceof UnauthorizedError
-    ? controller.clearSessionCookie(response)
-    : null;
+  if (error instanceof UnauthorizedError) {
+    controller.clearSessionCookie(response);
+    return response.status(error.statusCode).json(error);
+  }
   return response.status(statusCode).json(publicErrorObject);
 }
