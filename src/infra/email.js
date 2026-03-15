@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { ServiceError } from "./errors.js";
 
 function createTransporter() {
   return nodemailer.createTransport({
@@ -13,8 +14,17 @@ function createTransporter() {
 }
 
 async function send(mailOptions) {
-  const transporter = createTransporter();
-  await transporter.sendMail(mailOptions);
+  try {
+    const transporter = createTransporter();
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    throw new ServiceError({
+      message: "Não foi possível enviar o email.",
+      action: "Verifique se o service de email está disponível.",
+      cause: error,
+      context: mailOptions,
+    });
+  }
 }
 
 const email = {

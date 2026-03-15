@@ -17,7 +17,7 @@ function logger(req, res, next) {
     else if (statusCode >= 200) statusColor = chalk.green;
     else statusColor = chalk.white;
 
-    process.env.NODE_ENV === "development"
+    process.env.NODE_ENV !== "production"
       ? console.log(
           `${method} ${url} ${statusColor(statusCode)} in ${duration}ms\n`,
         )
