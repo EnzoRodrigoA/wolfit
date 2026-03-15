@@ -19,7 +19,7 @@ export default function globalErrorCatcher(error, request, response, next) {
         })
       : error;
   if (process.env.NODE_ENV === "production") {
-    const logMessage = `${statusCode} - ${error.name} - ${error.message}\nAction: ${error.action}\n${error.stack}`;
+    const logMessage = `${statusCode} - ${error.action}\n${error.stack}`;
     statusCode >= 500 ? console.error(logMessage) : console.info(logMessage);
   } else {
     statusCode >= 500

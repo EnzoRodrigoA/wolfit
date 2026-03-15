@@ -9,19 +9,8 @@ function logger(request, response, next) {
     const url = request.originalUrl;
     const { statusCode } = response;
 
-    if (process.env.NODE_ENV === "production") {
-      console.log(
-        JSON.stringify({
-          method,
-          url,
-          statusCode,
-          durationMs: duration,
-        }),
-      );
-      return;
-    }
-
     let statusColor;
+
     if (statusCode >= 500) statusColor = chalk.red;
     else if (statusCode >= 400) statusColor = chalk.yellow;
     else if (statusCode >= 300) statusColor = chalk.cyan;
