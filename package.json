@@ -27,6 +27,7 @@
     "lint:eslint:check": "eslint ./src",
     "migrations:create": "node-pg-migrate -m src/infra/migrations create",
     "migrations:up": "dotenv -e .env.development -- node-pg-migrate -m src/infra/migrations up",
+    "migrations:up:dry": "dotenv -e .env.development -- node-pg-migrate -m src/infra/migrations --dry-run up",
     "prepare": "husky",
     "commit": "cz"
   },
