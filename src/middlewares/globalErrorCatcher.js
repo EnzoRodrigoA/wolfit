@@ -18,16 +18,32 @@ export default function globalErrorCatcher(error, request, response, next) {
           statusCode: statusCode,
         })
       : error;
-  if (process.env.NODE_ENV !== "production") {
-    statusCode >= 500
-      ? console.error(
-          statusCode,
-          `- ${chalk.bgRed(error.name)} -\n${chalk.redBright(error.cause)}\n${error.stack}`,
-        )
-      : console.info(
-          statusCode,
-          `- ${chalk.bgYellow(error.name)} -\n${error.message}\n${chalk.yellow(error.action)}`,
-        );
+
+  if (process.env.NODE_ENV === "production") {
+    const logData = {
+      errorName: error.name,
+      message: error.message,
+      action: error.action,
+      stack: statusCode >= 500 ? error.stack : undefined,
+    };
+
+    if (statusCode >= 500) {
+      console.error(JSON.stringify(logData));
+    } else {
+      console.info(JSON.stringify(logData));
+    }
+  } else {
+    if (statusCode >= 500) {
+      console.error(
+        statusCode,
+        `- ${chalk.bgRed(error.name)} -\n${chalk.redBright(error.cause)}\n${error.stack}`,
+      );
+    } else {
+      console.info(
+        statusCode,
+        `- ${chalk.bgYellow(error.name)} -\n${error.message}\n${chalk.yellow(error.action)}`,
+      );
+    }
   }
 
   if (
